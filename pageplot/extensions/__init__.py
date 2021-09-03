@@ -2,8 +2,8 @@
 Built in extensions.
 """
 
-from pageplot.extensionmodel import PlotExtension
+from pageplot.extensions.scatter import ScatterExtension
 
 built_in_extensions = {
-    "none": PlotExtension,
+    "scatter": ScatterExtension,
 }

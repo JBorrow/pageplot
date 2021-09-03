@@ -4,8 +4,9 @@ The base top-level plot model class.
 From this all data and plotting flow.
 """
 
+from operator import truediv
 from pathlib import Path
-from typing import Any, Optional, Dict
+from typing import Any, Optional, Dict, List
 from pydantic import BaseModel
 
 from pageplot.extensionmodel import PlotExtension
@@ -24,6 +25,11 @@ class PlotModel(BaseModel):
     x: str
     y: Optional[str] = None
     z: Optional[str] = None
+
+    data: IOSpecification = None
+    fig: plt.Figure = None
+    axes: plt.Axes = None
+    extensions: List[PlotExtension] = None
 
     def associate_data(self, data: IOSpecification):
         """
@@ -45,7 +51,7 @@ class PlotModel(BaseModel):
 
         return
 
-    def run_extensions(self, additional_extensions: Dict[str, PlotExtension]):
+    def run_extensions(self, additional_extensions: Optional[Dict[str, PlotExtension]] = None):
         """
         Run the figure extensions (these provide all data to the figures,
         including the basic plotting). Internal extensions are performed
@@ -57,13 +63,16 @@ class PlotModel(BaseModel):
 
         self.extensions = []
 
+        if additional_extensions is None:
+            additional_extensions = {}
+
         for name, Extension in {**built_in_extensions, **additional_extensions}.items():
             extension = Extension(
                 name=name,
                 config=self.config,
-                x=self.x,
-                y=self.y,
-                z=self.z,
+                x=self.data.data_from_string(self.x),
+                y=self.data.data_from_string(self.y),
+                z=self.data.data_from_string(self.z),
                 **self.plot_spec.get(name, {}),
             )
 
@@ -99,3 +108,6 @@ class PlotModel(BaseModel):
         """
 
         plt.close(self.fig)
+
+    class Config:
+        arbitrary_types_allowed = True

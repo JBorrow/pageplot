@@ -2,6 +2,8 @@
 Basic implementation of the HDF5 I/O.
 """
 
+from typing import Optional
+
 from pageplot.exceptions import PagePlotParserError
 from .spec import IOSpecification
 
@@ -10,22 +12,30 @@ import unyt
 
 
 class IOHDF5(IOSpecification):
-    def data_from_string(self, path: str) -> unyt.unyt_array:
+    def data_from_string(self, path: Optional[str]) -> Optional[unyt.unyt_array]:
         """
         Gets data from the specified path. h5py does all the
         caching that you could ever need!
 
-        path: str
+        path: Optional[str]
             Path in dataset with units. Example:
             ``/Coordinates/Gas Mpc``
+
+        Notes
+        -----
+
+        When passed ``None``, returns ``None``
         """
 
+        if path is None:
+            return None
+
         try:
-            path_name, units = path.split(" ")
+            path_name, units = path.split(" ", 1)
         except ValueError:
             raise PagePlotParserError(
                 path,
                 "Unable to extract path and units. If units are not available, please enter None.",
             )
         with h5py.File(self.filename, "r") as handle:
-            return unyt.unyt_array(handle[path_name], units)
+            return unyt.unyt_array(handle[path_name], units, name=path_name)
