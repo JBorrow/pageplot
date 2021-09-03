@@ -15,7 +15,7 @@ import numpy as np
 
 import os
 
-def test_integration_basic(show_plot=False):
+def test_integration_basic(show_plot=True):
     # First generate some test data
     data_file = Path("test.hdf5")
 
@@ -31,7 +31,11 @@ def test_integration_basic(show_plot=False):
         name="test",
         config=config,
         plot_spec={
-            "scatter": {}
+            "scatter": {},
+            "median_line": {
+                "limits": ["0.0 Mpc", "1.0 Mpc"],
+                "display_as": "shaded",
+            },
         },
         x="XDataset Solar_Mass / kpc**2",
         y="YDataset kpc",

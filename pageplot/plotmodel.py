@@ -5,6 +5,7 @@ From this all data and plotting flow.
 """
 
 from operator import truediv
+from pageplot.exceptions import PagePlotParserError
 from pathlib import Path
 from typing import Any, Optional, Dict, List
 from pydantic import BaseModel
@@ -66,7 +67,16 @@ class PlotModel(BaseModel):
         if additional_extensions is None:
             additional_extensions = {}
 
-        for name, Extension in {**built_in_extensions, **additional_extensions}.items():
+        combined_extensions = {**built_in_extensions, **additional_extensions}
+        
+        for name in self.plot_spec.keys():
+            try:
+                Extension = combined_extensions[name]
+            except KeyError:
+                raise PagePlotParserError(
+                    name, "Unable to find matching extension for configuration value."
+                )
+
             extension = Extension(
                 name=name,
                 config=self.config,
