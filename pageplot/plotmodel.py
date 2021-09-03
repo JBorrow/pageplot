@@ -16,7 +16,6 @@ from pageplot.config import GlobalConfig
 import matplotlib.pyplot as plt
 
 
-
 class PlotModel(BaseModel):
     name: str
     config: GlobalConfig
@@ -74,7 +73,6 @@ class PlotModel(BaseModel):
             self.extensions.append(extension)
 
         return
-
 
     def save(self, filename: Path):
         """

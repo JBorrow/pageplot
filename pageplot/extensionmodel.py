@@ -3,7 +3,6 @@ Model for extensions that perform plotting and
 data production duties.
 """
 
-from pageplot.io.spec import IOSpecification
 from pageplot.config import GlobalConfig
 from pydantic import BaseModel
 
@@ -11,6 +10,7 @@ from typing import Optional, Dict, Any
 
 import unyt
 import matplotlib.pyplot as plt
+
 
 class PlotExtension(BaseModel):
     name: str
@@ -60,7 +60,6 @@ class PlotExtension(BaseModel):
         """
 
         return None
-
 
     class Config:
         # Required to allow typing for unyt.unyt_array
