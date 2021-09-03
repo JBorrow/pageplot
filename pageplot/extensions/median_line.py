@@ -2,7 +2,10 @@
 Basic median line extension.
 """
 
-from pageplot.validators import quantity_list_validator, line_display_as_to_function_validator
+from pageplot.validators import (
+    quantity_list_validator,
+    line_display_as_to_function_validator,
+)
 from pageplot.extensionmodel import PlotExtension
 from pageplot.exceptions import PagePlotIncompatbleExtension
 
@@ -11,8 +14,9 @@ from typing import List, Union, Callable, Dict, Any
 from matplotlib.pyplot import Figure, Axes
 from pydantic import validator
 
-import unyt 
+import unyt
 import numpy as np
+
 
 class MedianLineExtension(PlotExtension):
     limits: List[Union[str, unyt.unyt_quantity, unyt.unyt_array]]
@@ -29,7 +33,9 @@ class MedianLineExtension(PlotExtension):
 
     # Validators
     _convert_limits = validator("limits", allow_reuse=True)(quantity_list_validator)
-    _convert_display_as = validator("display_as", always=True, allow_reuse=True)(line_display_as_to_function_validator)
+    _convert_display_as = validator("display_as", always=True, allow_reuse=True)(
+        line_display_as_to_function_validator
+    )
 
     def preprocess(self):
         """
@@ -79,7 +85,6 @@ class MedianLineExtension(PlotExtension):
 
         self.centers = unyt.unyt_array(centers, units=self.x.units, name=self.x.name)
 
-
     def blit(self, fig: Figure, axes: Axes):
         """
         Essentially a pass-through for ``axes.scatter``.
@@ -99,5 +104,5 @@ class MedianLineExtension(PlotExtension):
                 "comment": "Errors represent the requested percentile range.",
                 "percentiles": self.percentiles,
                 "bins": self.bins,
-            }
+            },
         }

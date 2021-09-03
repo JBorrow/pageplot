@@ -37,6 +37,3 @@ class GlobalConfig(BaseModel):
         unyt.matplotlib_support.label_style = v
 
         return
-
-
-

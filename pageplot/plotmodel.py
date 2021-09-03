@@ -52,7 +52,9 @@ class PlotModel(BaseModel):
 
         return
 
-    def run_extensions(self, additional_extensions: Optional[Dict[str, PlotExtension]] = None):
+    def run_extensions(
+        self, additional_extensions: Optional[Dict[str, PlotExtension]] = None
+    ):
         """
         Run the figure extensions (these provide all data to the figures,
         including the basic plotting). Internal extensions are performed
@@ -68,7 +70,7 @@ class PlotModel(BaseModel):
             additional_extensions = {}
 
         combined_extensions = {**built_in_extensions, **additional_extensions}
-        
+
         for name in self.plot_spec.keys():
             try:
                 Extension = combined_extensions[name]

@@ -7,6 +7,7 @@ from pageplot.exceptions import PagePlotIncompatbleExtension
 
 from matplotlib.pyplot import Figure, Axes
 
+
 class ScatterExtension(PlotExtension):
     def blit(self, fig: Figure, axes: Axes):
         """
@@ -18,8 +19,6 @@ class ScatterExtension(PlotExtension):
                 self.y, "Unable to create a scatter plot without two dimensional data"
             )
 
-        axes.scatter(
-            self.x, self.y
-        )
+        axes.scatter(self.x, self.y)
 
         return

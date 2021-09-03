@@ -7,7 +7,10 @@ import unyt
 import matplotlib.pyplot as plt
 from typing import List, Union, Callable
 
-def quantity_list_validator(item: List[Union[unyt.unyt_quantity, unyt.unyt_array, str]]) -> List[unyt.unyt_quantity]:
+
+def quantity_list_validator(
+    item: List[Union[unyt.unyt_quantity, unyt.unyt_array, str]]
+) -> List[unyt.unyt_quantity]:
     """
     Converts a list of either strings (as ``FloatValue UnitX / UnitY``) or unyt quantities
     and arrays to a list of unyt quantities.
@@ -46,7 +49,7 @@ def quantity_list_validator(item: List[Union[unyt.unyt_quantity, unyt.unyt_array
             output.append(unyt.unyt_quantity(float(value), unit))
         else:
             output.append(x)
-    
+
     return output
 
 
@@ -61,7 +64,14 @@ def line_display_as_to_function_validator(item: str) -> Callable:
     """
 
     if item == "default":
-        def errorbar_basic(axes: plt.Axes, x: unyt.unyt_array, y: unyt.unyt_array, yerr: unyt.unyt_array, **kwargs):
+
+        def errorbar_basic(
+            axes: plt.Axes,
+            x: unyt.unyt_array,
+            y: unyt.unyt_array,
+            yerr: unyt.unyt_array,
+            **kwargs
+        ):
             """
             Basic pass-through to errorbar.
             """
@@ -71,12 +81,20 @@ def line_display_as_to_function_validator(item: str) -> Callable:
         return errorbar_basic
 
     elif item == "shaded":
-        def errorbar_shaded(axes: plt.Axes, x: unyt.unyt_array, y: unyt.unyt_array, yerr: unyt.unyt_array, alpha: float=0.3, **kwargs):
+
+        def errorbar_shaded(
+            axes: plt.Axes,
+            x: unyt.unyt_array,
+            y: unyt.unyt_array,
+            yerr: unyt.unyt_array,
+            alpha: float = 0.3,
+            **kwargs
+        ):
             """
             Shaded errorbar. Kwargs go to fill_between. Alpha gives the alpha of the errorbar.
             """
 
-            line, = axes.plot(x, y)
+            (line,) = axes.plot(x, y)
 
             if yerr.ndim > 1:
                 yerr_low = yerr[0]
@@ -87,8 +105,8 @@ def line_display_as_to_function_validator(item: str) -> Callable:
 
             shaded = axes.fill_between(
                 x=x,
-                y1=y-yerr_low,
-                y2=y+yerr_high,
+                y1=y - yerr_low,
+                y2=y + yerr_high,
                 alpha=alpha,
                 color=line.get_color(),
                 linewidth=0.0,
@@ -98,7 +116,14 @@ def line_display_as_to_function_validator(item: str) -> Callable:
         return errorbar_shaded
 
     elif item == "points":
-        def errorbar_points(axes: plt.Axes, x: unyt.unyt_array, y: unyt.unyt_array, yerr: unyt.unyt_array, **kwargs):
+
+        def errorbar_points(
+            axes: plt.Axes,
+            x: unyt.unyt_array,
+            y: unyt.unyt_array,
+            yerr: unyt.unyt_array,
+            **kwargs
+        ):
             """
             Errorbar but showing with points instead of a line.
             """
@@ -115,19 +140,7 @@ def line_display_as_to_function_validator(item: str) -> Callable:
         return errorbar_points
 
     else:
-        raise PagePlotParserError(item, "Unable to find matching line display. Valid styles are: points, shaded, default.")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        raise PagePlotParserError(
+            item,
+            "Unable to find matching line display. Valid styles are: points, shaded, default.",
+        )
