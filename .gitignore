@@ -1,3 +1,10 @@
+# Python Magic
 pageplot.egg-info/*
 */__pycache__/*
 **/__pycache__/*
+
+# Test files
+*.hdf5
+*.png
+*/*.hdf5
+*/*.png

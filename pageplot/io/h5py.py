@@ -9,6 +9,11 @@ from .spec import IOSpecification
 
 import h5py
 import unyt
+import re
+
+import numpy as np
+
+field_search = re.compile(r"(.*?)(\[.*?\])? (.*)")
 
 
 class IOHDF5(IOSpecification):
@@ -30,12 +35,24 @@ class IOHDF5(IOSpecification):
         if path is None:
             return None
 
-        try:
-            path_name, units = path.split(" ", 1)
-        except ValueError:
+        match = field_search.match(path)
+
+        if match:
+            field = match.group(1)
+
+            if match.group(2) is not None:
+                exec(f"selector = {match.group(2)}")
+            else:
+                selector = np.s_[:]
+
+            unit = match.group(3)
+
+            with h5py.File(self.filename, "r") as handle:
+                return unyt.unyt_array(handle[field][selector], unit, name=field)
+
+        else:
             raise PagePlotParserError(
                 path,
                 "Unable to extract path and units. If units are not available, please enter None.",
             )
-        with h5py.File(self.filename, "r") as handle:
-            return unyt.unyt_array(handle[path_name], units, name=path_name)
+
