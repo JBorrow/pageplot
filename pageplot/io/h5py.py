@@ -2,10 +2,10 @@
 Basic implementation of the HDF5 I/O.
 """
 
-from typing import Optional
+from typing import Optional, Type
 
 from pageplot.exceptions import PagePlotParserError
-from .spec import IOSpecification
+from .spec import IOSpecification, MetadataSpecification
 
 import h5py
 import unyt
@@ -16,7 +16,16 @@ import numpy as np
 field_search = re.compile(r"(.*?)(\[.*?\])? (.*)")
 
 
+class MetadataHDF5(MetadataSpecification):
+    pass
+
+
 class IOHDF5(IOSpecification):
+    # Specification assocaited with this IOSpecification
+    _metadata_specification: Type = MetadataHDF5
+    # Storage object that is lazy-loaded
+    _metadata: MetadataHDF5 = None
+
     def data_from_string(self, path: Optional[str]) -> Optional[unyt.unyt_array]:
         """
         Gets data from the specified path. h5py does all the
