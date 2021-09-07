@@ -97,16 +97,20 @@ def line_display_as_to_function_validator(item: str) -> Callable:
             (line,) = axes.plot(x, y)
 
             if yerr.ndim > 1:
-                yerr_low = yerr[0]
-                yerr_high = yerr[1]
+                yerr_low = y - yerr[0]
+                yerr_high = y + yerr[1]
             else:
-                yerr_low = yerr
-                yerr_high = yerr
+                yerr_low = y - yerr
+                yerr_high = y + yerr
+
+            # Reset names for automagical plotting
+            yerr_low.name = y.name
+            yerr_high.name = y.name
 
             shaded = axes.fill_between(
                 x=x,
-                y1=y - yerr_low,
-                y2=y + yerr_high,
+                y1=yerr_low,
+                y2=yerr_high,
                 alpha=alpha,
                 color=line.get_color(),
                 linewidth=0.0,
