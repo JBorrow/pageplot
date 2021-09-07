@@ -102,3 +102,42 @@ def test_integration_hist(show_plot=True):
 
     if not show_plot:
         os.remove(output_path)
+
+def test_integration_mf(show_plot=True):
+    # First generate some test data
+    data_file = Path("test.hdf5")
+
+    with h5py.File(data_file, "w") as handle:
+        handle.create_dataset("XDataset", data=np.random.rand(128))
+
+    data = IOHDF5(filename=data_file)
+
+    # Set up various objects
+    config = GlobalConfig()
+    plot = PlotModel(
+        name="test",
+        config=config,
+        plot_spec={
+            "mass_function": {
+                "limits": ["0.01 Solar_Mass", "1.0 Solar_Mass"],
+                "display_as": "shaded",
+                "box_volume": "12 Mpc**3"
+            },
+        },
+        x="XDataset Solar_Mass",
+    )
+
+    plot.associate_data(data=data)
+
+    plot.setup_figures()
+
+    plot.run_extensions()
+
+    output_path = Path("test.png")
+
+    plot.save(filename=output_path)
+
+    os.remove(data_file)
+
+    if not show_plot:
+        os.remove(output_path)
