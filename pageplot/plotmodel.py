@@ -82,6 +82,7 @@ class PlotModel(BaseModel):
             extension = Extension(
                 name=name,
                 config=self.config,
+                metadata=self.data.metadata,
                 x=self.data.data_from_string(self.x),
                 y=self.data.data_from_string(self.y),
                 z=self.data.data_from_string(self.z),

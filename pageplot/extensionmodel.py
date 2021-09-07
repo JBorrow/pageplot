@@ -4,6 +4,7 @@ data production duties.
 """
 
 from pageplot.config import GlobalConfig
+from pageplot.io.spec import MetadataSpecification
 from pydantic import BaseModel
 
 from typing import Optional, Dict, Any
@@ -15,6 +16,7 @@ import matplotlib.pyplot as plt
 class PlotExtension(BaseModel):
     name: str
     config: GlobalConfig
+    metadata: MetadataSpecification
 
     x: unyt.unyt_array
     y: Optional[unyt.unyt_array] = None

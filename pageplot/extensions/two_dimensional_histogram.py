@@ -54,8 +54,12 @@ class TwoDimensionalHistogramExtension(PlotExtension):
         else:
             raw_bin_edges_y = np.logspace(*self.limits_y, self.bins)
 
-        self.x_edges = unyt.unyt_array(raw_bin_edges_x, self.limits_x[0].units, self.x.name)
-        self.y_edges = unyt.unyt_array(raw_bin_edges_y, self.limits_y[1].units, self.y.name)
+        self.x_edges = unyt.unyt_array(
+            raw_bin_edges_x, self.limits_x[0].units, self.x.name
+        )
+        self.y_edges = unyt.unyt_array(
+            raw_bin_edges_y, self.limits_y[1].units, self.y.name
+        )
 
         H, *_ = np.histogram2d(
             x=self.x,
