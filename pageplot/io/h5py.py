@@ -55,4 +55,3 @@ class IOHDF5(IOSpecification):
                 path,
                 "Unable to extract path and units. If units are not available, please enter None.",
             )
-

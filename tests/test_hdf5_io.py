@@ -11,6 +11,7 @@ import unyt
 
 from pathlib import Path
 
+
 def test_io_hdf5():
     # first, create some test data on disk.
 
@@ -22,9 +23,7 @@ def test_io_hdf5():
 
     io_instance = IOHDF5(filename=test_file)
 
-    read_data = io_instance.data_from_string(
-        "FirstTestDataset Mpc"
-    )
+    read_data = io_instance.data_from_string("FirstTestDataset Mpc")
 
     assert read_data.units == unyt.Mpc
 

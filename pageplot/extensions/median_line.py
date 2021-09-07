@@ -58,7 +58,7 @@ class MedianLineExtension(PlotExtension):
         deviations = []
         centers = []
 
-        hist = np.digitize(self.x, self.edges)
+        hist = np.digitize(self.x, self.edges.to(self.x.units))
 
         for bin in range(1, self.bins):
             indices_in_this_bin = hist == bin
