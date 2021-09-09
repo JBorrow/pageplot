@@ -16,6 +16,7 @@ from pydantic import validator
 
 import unyt
 import numpy as np
+import math
 
 
 class MedianLineExtension(PlotExtension):
@@ -50,7 +51,9 @@ class MedianLineExtension(PlotExtension):
         if self.spacing == "linear":
             raw_bin_edges = np.linspace(*self.limits, self.bins)
         else:
-            raw_bin_edges = np.logspace(*self.limits, self.bins)
+            raw_bin_edges = np.logspace(
+                *[math.log10(x) for x in self.limits], self.bins
+            )
 
         self.edges = unyt.unyt_array(raw_bin_edges, self.limits[0].units)
 
@@ -74,16 +77,20 @@ class MedianLineExtension(PlotExtension):
                 # in the bin
                 centers.append(np.median(self.x[indices_in_this_bin].value))
 
-        self.values = unyt.unyt_array(medians, units=self.y.units, name=self.y.name)
+        self.values = unyt.unyt_array(medians, units=self.y.units, name=self.y.name).to(
+            self.y_units
+        )
         # Percentiles actually gives us the values - we want to be able to use
         # matplotlib's errorbar function
         self.errors = unyt.unyt_array(
             abs(np.array(deviations).T - self.values.value),
             units=self.y.units,
             name=f"{self.y.name} {self.percentiles} percentiles",
-        )
+        ).to(self.y_units)
 
-        self.centers = unyt.unyt_array(centers, units=self.x.units, name=self.x.name)
+        self.centers = unyt.unyt_array(
+            centers, units=self.x.units, name=self.x.name
+        ).to(self.x_units)
 
     def blit(self, fig: Figure, axes: Axes):
         """

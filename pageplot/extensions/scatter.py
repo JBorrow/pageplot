@@ -19,6 +19,6 @@ class ScatterExtension(PlotExtension):
                 self.y, "Unable to create a scatter plot without two dimensional data"
             )
 
-        axes.scatter(self.x, self.y)
+        axes.scatter(self.x.to(self.x_units), self.y.to(self.y_units))
 
         return

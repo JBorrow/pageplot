@@ -13,6 +13,7 @@ from matplotlib.colors import LogNorm, Normalize
 
 import unyt
 import numpy as np
+import math
 
 
 class TwoDimensionalHistogramExtension(PlotExtension):
@@ -47,18 +48,22 @@ class TwoDimensionalHistogramExtension(PlotExtension):
         if self.spacing_x == "linear":
             raw_bin_edges_x = np.linspace(*self.limits_x, self.bins)
         else:
-            raw_bin_edges_x = np.logspace(*self.limits_x, self.bins)
+            raw_bin_edges_x = np.logspace(
+                *[math.log10(x) for x in self.limits_x], self.bins
+            )
 
         if self.spacing_y == "linear":
             raw_bin_edges_y = np.linspace(*self.limits_y, self.bins)
         else:
-            raw_bin_edges_y = np.logspace(*self.limits_y, self.bins)
+            raw_bin_edges_y = np.logspace(
+                *[math.log10(y) for y in self.limits_y], self.bins
+            )
 
         self.x_edges = unyt.unyt_array(
-            raw_bin_edges_x, self.limits_x[0].units, self.x.name
+            raw_bin_edges_x, self.limits_x[0].units, name=self.x.name
         )
         self.y_edges = unyt.unyt_array(
-            raw_bin_edges_y, self.limits_y[1].units, self.y.name
+            raw_bin_edges_y, self.limits_y[0].units, name=self.y.name
         )
 
         H, *_ = np.histogram2d(
@@ -67,7 +72,7 @@ class TwoDimensionalHistogramExtension(PlotExtension):
             bins=[self.x_edges.to(self.x.units), self.y_edges.to(self.y.units)],
         )
 
-        self.grid = unyt.unyt_array(H, None)
+        self.grid = unyt.unyt_array(H.T, None)
 
         return
 
@@ -85,9 +90,9 @@ class TwoDimensionalHistogramExtension(PlotExtension):
         norm = Normalize() if self.norm == "linear" else LogNorm()
 
         axes.pcolormesh(
-            self.x_edges,
-            self.y_edges,
-            self.grid,
+            self.x_edges.to(self.x_units),
+            self.y_edges.to(self.y_units),
+            self.grid.to(self.z_units),
             norm=norm,
             cmap=self.cmap,
             rasterized=True,

@@ -107,6 +107,12 @@ class MassFunctionExtension(PlotExtension):
 
         self.centers, self.values, self.errors, self.edges = func(**attrs)
 
+        self.centers.convert_to_units(self.x_units)
+        self.edges.convert_to_units(self.x_units)
+
+        self.values.convert_to_units(self.y_units)
+        self.errors.convert_to_units(self.y_units)
+
         return
 
     def blit(self, fig: Figure, axes: Axes):
