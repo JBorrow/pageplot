@@ -77,20 +77,20 @@ class MedianLineExtension(PlotExtension):
                 # in the bin
                 centers.append(np.median(self.x[indices_in_this_bin].value))
 
-        self.values = unyt.unyt_array(medians, units=self.y.units, name=self.y.name).to(
-            self.y_units
-        )
+        self.values = unyt.unyt_array(medians, units=self.y.units, name=self.y.name)
         # Percentiles actually gives us the values - we want to be able to use
         # matplotlib's errorbar function
         self.errors = unyt.unyt_array(
             abs(np.array(deviations).T - self.values.value),
             units=self.y.units,
             name=f"{self.y.name} {self.percentiles} percentiles",
-        ).to(self.y_units)
+        )
 
-        self.centers = unyt.unyt_array(
-            centers, units=self.x.units, name=self.x.name
-        ).to(self.x_units)
+        self.centers = unyt.unyt_array(centers, units=self.x.units, name=self.x.name)
+
+        self.centers.convert_to_units(self.x_units)
+        self.errors.convert_to_units(self.y_units)
+        self.values.convert_to_units(self.y_units)
 
     def blit(self, fig: Figure, axes: Axes):
         """
