@@ -5,9 +5,11 @@ From this all data and plotting flow.
 """
 
 from operator import truediv
+
+from pydantic.class_validators import validator
 from pageplot.exceptions import PagePlotParserError
 from pathlib import Path
-from typing import Any, Optional, Dict, List
+from typing import Any, Optional, Dict, List, Union
 from pydantic import BaseModel
 
 from pageplot.extensionmodel import PlotExtension
@@ -16,6 +18,7 @@ from pageplot.io.spec import IOSpecification
 from pageplot.config import GlobalConfig
 
 import matplotlib.pyplot as plt
+import unyt
 
 
 class PlotModel(BaseModel):
@@ -26,6 +29,11 @@ class PlotModel(BaseModel):
     x: str
     y: Optional[str] = None
     z: Optional[str] = None
+
+    # Output units for the plot.
+    x_units: Union[str, None, unyt.unyt_quantity] = None
+    y_units: Union[str, None, unyt.unyt_quantity] = None
+    z_units: Union[str, None, unyt.unyt_quantity] = None
 
     data: IOSpecification = None
     fig: plt.Figure = None
@@ -64,6 +72,22 @@ class PlotModel(BaseModel):
             Any additional extensions conforming to the specification.
         """
 
+        # First, sort out units.
+        units = {
+            "x_units": self.x_units,
+            "y_units": self.y_units,
+            "z_units": self.z_units,
+        }
+
+        for name, value in units.items():
+            if value is None:
+                if (associated_data := getattr(self, name[0])) is None:
+                    units[name] = unyt.unyt_quantity(1.0, None)
+                else:
+                    units[name] = associated_data.units
+            else:
+                units[name] = unyt.unyt_quantity(1.0, value)
+
         self.extensions = []
 
         if additional_extensions is None:
@@ -86,6 +110,7 @@ class PlotModel(BaseModel):
                 x=self.data.data_from_string(self.x),
                 y=self.data.data_from_string(self.y),
                 z=self.data.data_from_string(self.z),
+                **units,
                 **self.plot_spec.get(name, {}),
             )
 

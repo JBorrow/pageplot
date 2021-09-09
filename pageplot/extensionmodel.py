@@ -22,6 +22,11 @@ class PlotExtension(BaseModel):
     y: Optional[unyt.unyt_array] = None
     z: Optional[unyt.unyt_array] = None
 
+    # Derived datasets should be converted to these before plotting.
+    x_units: unyt.unyt_quantity = unyt.unyt_quantity(1.0, None)
+    y_units: unyt.unyt_quantity = unyt.unyt_quantity(1.0, None)
+    z_units: unyt.unyt_quantity = unyt.unyt_quantity(1.0, None)
+
     # You should load the data from your JSON configuration here,
     # for example:
     # nbins: int = 25
