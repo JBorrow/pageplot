@@ -5,8 +5,9 @@ These can be extended by using their pluggy hooks
 and iheritence.
 """
 
-from typing import Optional, Type
+from typing import Optional, Type, Union
 import unyt
+import numpy as np
 
 from pathlib import Path
 
@@ -51,10 +52,17 @@ class IOSpecification(BaseModel):
 
         return self._metadata
 
-    def data_from_string(self, path: Optional[str]) -> Optional[unyt.unyt_array]:
+    def data_from_string(
+        self,
+        path: Optional[str],
+        mask: Optional[Union[np.array, np.lib.index_tricks.IndexExpression]] = None,
+    ) -> Optional[unyt.unyt_array]:
         """
         Return a ``unyt`` array containing data assocaited with the
         given input string. If passed ``None``, this function must return
         ``None``.
+
+        A mask may optionally be provided to select data. This can
+        be handled by the individual plugin creators for lazy-loading.
         """
         return unyt.unyt_array()

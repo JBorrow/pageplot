@@ -5,7 +5,7 @@ Needs to loop over many, many files, so employs a parallel mapper to
 do that. These are typically latency limited on HPC systems.
 """
 
-from typing import Optional, Type, Dict, Any
+from typing import Optional, Type, Dict, Any, Union
 
 from pydantic.class_validators import validator
 from pydantic.errors import NoneIsAllowedError
@@ -300,7 +300,11 @@ class IOAREPOSubFind(IOSpecification):
 
         return raw
 
-    def data_from_string(self, path: Optional[str]) -> Optional[unyt.unyt_array]:
+    def data_from_string(
+        self,
+        path: Optional[str],
+        mask: Optional[Union[np.array, np.lib.index_tricks.IndexExpression]] = None,
+    ) -> Optional[unyt.unyt_array]:
         """
         Gets data from the specified path. h5py does all the
         caching that you could ever need!
@@ -317,6 +321,9 @@ class IOAREPOSubFind(IOSpecification):
 
         if path is None:
             return None
+
+        if mask is None:
+            mask = np.s_[:]
 
         if path.count("[") > 0:
             start = path.find("[")
@@ -336,7 +343,7 @@ class IOAREPOSubFind(IOSpecification):
             self.read_raw_field(field=field, selector=selector),
             self.get_unit(field),
             name=path,
-        )
+        )[mask]
 
     class Config:
         arbitrary_types_allowed = True

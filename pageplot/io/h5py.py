@@ -2,7 +2,7 @@
 Basic implementation of the HDF5 I/O.
 """
 
-from typing import Optional, Type
+from typing import Optional, Type, Union
 
 from pageplot.exceptions import PagePlotParserError
 from .spec import IOSpecification, MetadataSpecification
@@ -26,7 +26,11 @@ class IOHDF5(IOSpecification):
     # Storage object that is lazy-loaded
     _metadata: MetadataHDF5 = None
 
-    def data_from_string(self, path: Optional[str]) -> Optional[unyt.unyt_array]:
+    def data_from_string(
+        self,
+        path: Optional[str],
+        mask: Optional[Union[np.array, np.lib.index_tricks.IndexExpression]] = None,
+    ) -> Optional[unyt.unyt_array]:
         """
         Gets data from the specified path. h5py does all the
         caching that you could ever need!
@@ -44,6 +48,9 @@ class IOHDF5(IOSpecification):
         if path is None:
             return None
 
+        if mask is None:
+            mask = np.s_[:]
+
         match = field_search.match(path)
 
         if match:
@@ -57,7 +64,7 @@ class IOHDF5(IOSpecification):
             unit = match.group(3)
 
             with h5py.File(self.filename, "r") as handle:
-                return unyt.unyt_array(handle[field][selector], unit, name=field)
+                return unyt.unyt_array(handle[field][selector][mask], unit, name=field)
 
         else:
             raise PagePlotParserError(

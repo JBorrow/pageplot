@@ -16,8 +16,10 @@ from pageplot.extensionmodel import PlotExtension
 from pageplot.extensions import built_in_extensions
 from pageplot.io.spec import IOSpecification
 from pageplot.config import GlobalConfig
+from pageplot.mask import get_mask
 
 import matplotlib.pyplot as plt
+import numpy as np
 import unyt
 
 
@@ -34,6 +36,8 @@ class PlotModel(BaseModel):
     x_units: Union[str, None, unyt.unyt_quantity] = None
     y_units: Union[str, None, unyt.unyt_quantity] = None
     z_units: Union[str, None, unyt.unyt_quantity] = None
+
+    mask: Optional[str] = None
 
     data: IOSpecification = None
     fig: plt.Figure = None
@@ -72,7 +76,7 @@ class PlotModel(BaseModel):
             Any additional extensions conforming to the specification.
         """
 
-        # First, sort out units.
+        # First, sort out units and masking
         units = {
             "x_units": self.x_units,
             "y_units": self.y_units,
@@ -87,6 +91,8 @@ class PlotModel(BaseModel):
                     units[name] = associated_data.units
             else:
                 units[name] = unyt.unyt_quantity(1.0, value)
+
+        mask = get_mask(data=self.data, mask_text=self.mask)
 
         self.extensions = []
 
@@ -107,9 +113,9 @@ class PlotModel(BaseModel):
                 name=name,
                 config=self.config,
                 metadata=self.data.metadata,
-                x=self.data.data_from_string(self.x),
-                y=self.data.data_from_string(self.y),
-                z=self.data.data_from_string(self.z),
+                x=self.data.data_from_string(self.x, mask=mask),
+                y=self.data.data_from_string(self.y, mask=mask),
+                z=self.data.data_from_string(self.z, mask=mask),
                 **units,
                 **self.plot_spec.get(name, {}),
             )
