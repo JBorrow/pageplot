@@ -3,11 +3,14 @@ Global configuration and settings for a
 full run of PlotPage.
 """
 
-from typing import Optional
+from typing import Any, Dict, Optional
 from pydantic import BaseModel, validator
 
 import unyt
 from matplotlib.pyplot import style
+
+from pageplot.configextension import ConfigExtension
+
 
 
 class GlobalConfig(BaseModel):
@@ -15,6 +18,8 @@ class GlobalConfig(BaseModel):
 
     unyt_matplotlib_support_enable: bool = True
     unyt_label_style: str = "[]"
+
+    extensions: Dict[str, Dict[str, Any]] = {}
 
     @validator("stylesheet")
     def load_stylesheet(cls, v):
@@ -35,5 +40,23 @@ class GlobalConfig(BaseModel):
             raise ValueError("You must choose one of [], (), or / for the unyt style.")
 
         unyt.matplotlib_support.label_style = v
+
+        return
+
+    def run_extensions(self, additional_extensions: Optional[Dict[str, ConfigExtension]] = None):
+        """
+        Sets up the internal extensions and affixes them to the
+        object.
+        """
+
+        from pageplot.extensions import built_in_config_extensions
+
+        if additional_extensions is None:
+            additional_extensions = {}
+
+        combined_extensions = {**built_in_config_extensions, **additional_extensions}
+
+        for name, Extension in combined_extensions.items():
+            object.__setattr__(self, name, Extension(**self.extensions.get(name, {})))
 
         return

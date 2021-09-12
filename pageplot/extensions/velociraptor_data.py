@@ -1,0 +1,68 @@
+"""
+Velociraptor comparison data plotting extension.
+"""
+
+from velociraptor.observations import load_observations
+from velociraptor.observations.objects import ObservationalData
+
+from pageplot.configextension import ConfigExtension
+from pageplot.extensionmodel import PlotExtension
+from pageplot.exceptions import PagePlotIncompatbleExtension
+
+from matplotlib.pyplot import Figure, Axes
+
+from typing import List
+from pathlib import Path
+
+
+class VelociraptorDataConfigExtension(ConfigExtension):
+    registration_name: str = "velociraptor_data"
+    data_path: Path = Path(".")
+
+
+class VelociraptorDataExtension(PlotExtension):
+    files: List[Path] = []
+    # Specify a custom scale factor range to load data within
+    scale_factor_bracket_width: float = 0.1
+
+    observations: List[ObservationalData] = []
+
+    def preprocess(self):
+        """
+        Loads the data files in.
+        """
+
+        bracket_high = self.metadata.a - self.scale_factor_bracket_width
+        bracket_low = self.metadata.a + self.scale_factor_bracket_width
+
+        redshift_bracket = [1.0 / a - 1.0 for a in [bracket_low, bracket_high]]
+
+        self.observations = load_observations(
+            filenames=[self.config.velociraptor_data.data_path / file for file in self.files],
+            redshift_bracket=redshift_bracket,
+        )
+
+        return
+
+    def blit(self, fig: Figure, axes: Axes):
+        """
+        Plots the data files that were read in preprocess on given axes.
+        """
+
+        for observation in self.observations:
+            observation.x.convert_to_units(self.x_units)
+            observation.y.convert_to_units(self.y_units)
+            observation.plot_on_axes(axes=axes)
+
+        return
+
+    def serialize(self):
+        return {
+            "path": self.config.velociraptor_data.data_path,
+            "included_data": [
+                {
+                    "filename": obs.filename,
+                    "bibcode": obs.bibcode,
+                } for obs in self.observations
+            ]
+        }

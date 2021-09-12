@@ -42,7 +42,7 @@ class PlotModel(BaseModel):
     data: IOSpecification = None
     fig: plt.Figure = None
     axes: plt.Axes = None
-    extensions: List[PlotExtension] = None
+    extensions: Dict[str, PlotExtension] = None
 
     def associate_data(self, data: IOSpecification):
         """
@@ -68,8 +68,8 @@ class PlotModel(BaseModel):
         self, additional_extensions: Optional[Dict[str, PlotExtension]] = None
     ):
         """
-        Run the figure extensions (these provide all data to the figures,
-        including the basic plotting). Internal extensions are performed
+        Run the figure extensions (these provide all data for the figures,
+        excluding the plotting). Internal extensions are performed
         first, then any additional extensions are executed.
 
         additional_extensions: Dict[str, PlotExtension]
@@ -94,7 +94,7 @@ class PlotModel(BaseModel):
 
         mask = get_mask(data=self.data, mask_text=self.mask)
 
-        self.extensions = []
+        self.extensions = {}
 
         if additional_extensions is None:
             additional_extensions = {}
@@ -121,11 +121,21 @@ class PlotModel(BaseModel):
             )
 
             extension.preprocess()
-            extension.blit(fig=self.fig, axes=self.axes)
 
-            self.extensions.append(extension)
+            self.extensions[name] = extension
 
         return
+
+    def perform_blitting(self):
+        """
+        Performs the blitting (creating the figure).
+
+        Without this, the extensions are just 'created' and pre-processed
+        without affecting or creating the figure.
+        """
+
+        for extension in self.extensions.values():
+            extension.blit(fig=self.fig, axes=self.axes)
 
     def save(self, filename: Path):
         """
@@ -145,6 +155,20 @@ class PlotModel(BaseModel):
         self.fig.savefig(filename)
 
         return
+
+    def serialize(self) -> Dict[str, Any]:
+        """
+        Serializes the contents of the extensions to a dictionary.
+
+        Note that you do not have to have 'created' the figure to run this,
+        if you just want the data you should be able to just request
+        the serialized data.
+        """
+
+        serialized = {name: ext.serialize() for name, ext in self.extensions.items()}
+
+        return serialized
+
 
     def finalize(self):
         """
