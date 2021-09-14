@@ -2,6 +2,7 @@
 Built in extensions.
 """
 
+from pageplot.extensions.metadata import MetadataExtension
 from pageplot.extensions.legend import LegendExtension
 from pageplot.extensions.velociraptor_data import (
     VelociraptorDataConfigExtension,
@@ -29,6 +30,7 @@ built_in_extensions = {
     "scale_axes": ScaleAxesExtension,
     "axes_limits": AxesLimitsExtension,
     "legend": LegendExtension,
+    "metadata": MetadataExtension,
 }
 
 
