@@ -57,7 +57,7 @@ def get_mask(
         if check in mask_text:
             data_name, compare = mask_text.split(check)
 
-            raw_data = data.data_from_string(data_name)
+            raw_data = data.data_from_string(data_name.strip())
 
             value, unit = compare.strip().split(" ", 1)
 
