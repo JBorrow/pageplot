@@ -11,15 +11,16 @@ import numpy as np
 
 from pathlib import Path
 
-from pydantic import BaseModel, validator
+import attr
 
 
-class MetadataSpecification(BaseModel):
+@attr.s(auto_attribs=True)
+class MetadataSpecification:
     """
     Specification for adding additional metadata to the I/O specification.
     """
 
-    filename: Path
+    filename: Path = attr.ib(converter=Path)
 
     # Suggested Additions:
     # - For Cosmology
@@ -28,29 +29,22 @@ class MetadataSpecification(BaseModel):
     #   + z, the current redshift (if appropriate)
 
 
-class IOSpecification(BaseModel):
+@attr.s(auto_attribs=True)
+class IOSpecification:
     """
     Base required specification for I/O extensions.
     """
 
-    filename: Path
+    filename: Path = attr.ib(converter=Path)
 
     # Specification assocaited with this IOSpecification
-    _metadata_specification: Type = MetadataSpecification
+    metadata_specification: Type = MetadataSpecification
     # Storage object that is lazy-loaded
-    _metadata: MetadataSpecification = None
+    metadata: MetadataSpecification = attr.ib(init=False)
 
-    @property
-    def metadata(self):
-        if self._metadata is None:
-            # This must be done this way because private variables are
-            # class variables in pydantic.
-            # https://github.com/samuelcolvin/pydantic/issues/655
-            object.__setattr__(
-                self, "_metadata", self._metadata_specification(filename=self.filename)
-            )
+    def __attrs_post_init__(self):
+        self.metadata = self.metadata_specification(filename=self.filename)
 
-        return self._metadata
 
     def data_from_string(
         self,

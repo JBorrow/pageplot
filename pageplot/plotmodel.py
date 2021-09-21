@@ -88,7 +88,7 @@ class PlotModel(BaseModel):
                 if (associated_data := getattr(self, name[0])) is None:
                     units[name] = unyt.unyt_quantity(1.0, None)
                 else:
-                    units[name] = associated_data.units
+                    units[name] = unyt.unyt_quantity(1.0, associated_data.split(" ", 1)[1])
             else:
                 units[name] = unyt.unyt_quantity(1.0, value)
 

@@ -4,6 +4,8 @@ Basic implementation of the HDF5 I/O.
 
 from typing import Optional, Type, Union
 
+import attr
+
 from pageplot.exceptions import PagePlotParserError
 from .spec import IOSpecification, MetadataSpecification
 
@@ -16,15 +18,17 @@ import numpy as np
 field_search = re.compile(r"(.*?)(\[.*?\])? (.*)")
 
 
+@attr.s
 class MetadataHDF5(MetadataSpecification):
     pass
 
 
+@attr.s
 class IOHDF5(IOSpecification):
     # Specification assocaited with this IOSpecification
-    _metadata_specification: Type = MetadataHDF5
+    metadata_specification: Type = MetadataHDF5
     # Storage object that is lazy-loaded
-    _metadata: MetadataHDF5 = None
+    metadata: Optional[MetadataHDF5] = None
 
     def data_from_string(
         self,

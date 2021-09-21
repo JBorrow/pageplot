@@ -125,6 +125,7 @@ def test_integration_mf(show_plot=True):
             },
         },
         x="XDataset Solar_Mass",
+        y_units="Mpc**-3",
     )
 
     plot.associate_data(data=data)
