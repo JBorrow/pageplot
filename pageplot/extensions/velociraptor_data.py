@@ -14,18 +14,22 @@ from matplotlib.pyplot import Figure, Axes
 from typing import List
 from pathlib import Path
 
+import attr
 
+
+@attr.s(auto_attribs=True)
 class VelociraptorDataConfigExtension(ConfigExtension):
     registration_name: str = "velociraptor_data"
-    data_path: Path = Path(".")
+    data_path: Path = attr.ib(default=Path("."), converter=Path)
 
 
+@attr.s(auto_attribs=True)
 class VelociraptorDataExtension(PlotExtension):
-    files: List[Path] = []
+    files: List[Path] = attr.ib(default=attr.Factory(list), converter=lambda x: [Path(a) for a in x])
     # Specify a custom scale factor range to load data within
-    scale_factor_bracket_width: float = 0.1
+    scale_factor_bracket_width: float = attr.ib(default=0.1, converter=float)
 
-    observations: List[ObservationalData] = []
+    observations: List[ObservationalData] = attr.ib(init=False)
 
     def preprocess(self):
         """

@@ -7,7 +7,9 @@ from typing import Optional, Union
 from matplotlib.pyplot import Figure, Axes
 from pageplot.extensionmodel import PlotExtension
 
+import attr
 
+@attr.s(auto_attribs=True)
 class LegendExtension(PlotExtension):
     on: bool = True
     frame_on: Optional[bool] = None

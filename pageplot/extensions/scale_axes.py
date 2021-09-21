@@ -6,7 +6,9 @@ from pageplot.extensionmodel import PlotExtension
 
 from matplotlib.pyplot import Figure, Axes
 
+import attr
 
+@attr.s(auto_attribs=True)
 class ScaleAxesExtension(PlotExtension):
     """
     Scales the axes, passing through to matplotlib's
@@ -15,11 +17,11 @@ class ScaleAxesExtension(PlotExtension):
 
     # Scale in x (e.g. log) and base
     scale_x: str = "linear"
-    base_x: float = 10.0
+    base_x: float = attr.ib(default=10.0, converter=float)
 
     # Scale
     scale_y: str = "linear"
-    base_y: float = 10.0
+    base_y: float = attr.ib(default=10.0, converter=float)
 
     def blit(self, fig: Figure, axes: Axes):
         if self.scale_x == "log":

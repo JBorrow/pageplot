@@ -3,9 +3,10 @@ Extension for configuration. Needs to be a separate file to avoid
 circular imports.
 """
 
-from pydantic import BaseModel
+import attr
 
-class ConfigExtension(BaseModel):
+@attr.s(auto_attribs=True)
+class ConfigExtension:
     """
     Used for creating extensions to the :class:`GlobalConfig`
     object. This is used to enable 'global' property setting.

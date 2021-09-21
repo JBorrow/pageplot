@@ -8,17 +8,19 @@ from typing import Optional, Union
 from matplotlib.pyplot import Figure, Axes
 from pageplot.extensionmodel import PlotExtension
 
+import attr
 
+@attr.s(auto_attribs=True)
 class MetadataExtension(PlotExtension):
-    comment: Optional[str] = None
-    title: Optional[str] = None
-    caption: Optional[str] = None
-    section: Optional[str] = None
+    comment: Optional[str] = attr.ib(default=None, converter=attr.converters.default_if_none(""))
+    title: Optional[str] = attr.ib(default=None, converter=attr.converters.default_if_none(""))
+    caption: Optional[str] = attr.ib(default=None, converter=attr.converters.default_if_none(""))
+    section: Optional[str] = attr.ib(default=None, converter=attr.converters.default_if_none(""))
 
     def serialize(self):
         return {
-            "comment": self.comment if self.comment is not None else "",
-            "title": self.title if self.comment is not None else "",
-            "caption": self.caption if self.caption is not None else "",
-            "section": self.section if self.section is not None else "",
+            "comment": self.comment,
+            "title": self.title,
+            "caption": self.caption,
+            "section": self.section,
         }

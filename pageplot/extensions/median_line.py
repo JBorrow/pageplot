@@ -12,31 +12,27 @@ from pageplot.exceptions import PagePlotIncompatbleExtension
 from typing import List, Union, Callable, Dict, Any
 
 from matplotlib.pyplot import Figure, Axes
-from pydantic import validator
 
+
+import attr
 import unyt
 import numpy as np
 import math
 
 
+@attr.s(auto_attribs=True)
 class MedianLineExtension(PlotExtension):
-    limits: List[Union[str, unyt.unyt_quantity, unyt.unyt_array]]
-    bins: int = 10
-    spacing: str = "linear"
-    percentiles: List[float] = [10.0, 90.0]
-    display_as: Union[str, Callable] = "default"
+    limits: List[Union[str, unyt.unyt_quantity, unyt.unyt_array]] = attr.ib(default=None, converter=quantity_list_validator)
+    bins: int = attr.ib(default=10, converter=int)
+    spacing: str = attr.ib(default=None, converter=attr.converters.default_if_none("linear"), validator=attr.validators.in_(["linear", "log"]))
+    percentiles: List[float] = attr.ib(default=[10.0, 90.0], converter=lambda x: [float(a) for a in x])
+    display_as: Union[str, Callable] = attr.ib(default="default", converter=line_display_as_to_function_validator)
 
     # Internals
     edges: unyt.unyt_array = None
     centers: unyt.unyt_array = None
     values: unyt.unyt_array = None
     errors: unyt.unyt_array = None
-
-    # Validators
-    _convert_limits = validator("limits", allow_reuse=True)(quantity_list_validator)
-    _convert_display_as = validator("display_as", always=True, allow_reuse=True)(
-        line_display_as_to_function_validator
-    )
 
     def preprocess(self):
         """

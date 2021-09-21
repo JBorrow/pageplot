@@ -2,7 +2,6 @@
 Basic histogram plot extension.
 """
 
-from pydantic import validator
 from pageplot.validators import quantity_list_validator
 from typing import List, Union, Optional
 from pageplot.extensionmodel import PlotExtension
@@ -15,7 +14,9 @@ import unyt
 import numpy as np
 import math
 
+import attr
 
+@attr.s(auto_attribs=True)
 class TwoDimensionalHistogramExtension(PlotExtension):
     """
     A two dimensional background histogram for the figure. Note that this rasterises
@@ -23,22 +24,18 @@ class TwoDimensionalHistogramExtension(PlotExtension):
     versions are not sustainable.
     """
 
-    limits_x: List[Union[str, unyt.unyt_quantity, unyt.unyt_array]]
-    limits_y: List[Union[str, unyt.unyt_quantity, unyt.unyt_array]]
-    bins: int = 10
-    spacing_x: str = "linear"
-    spacing_y: str = "linear"
-    norm: str = "linear"
+    limits_x: List[Union[str, unyt.unyt_quantity, unyt.unyt_array]] = attr.ib(default=None, converter=quantity_list_validator)
+    limits_y: List[Union[str, unyt.unyt_quantity, unyt.unyt_array]] = attr.ib(default=None, converter=quantity_list_validator)
+    bins: int = attr.ib(default=10, converter=int)
+    spacing_x: str = attr.ib(default="linear", validator=attr.validators.in_(["linear", "log"]))
+    spacing_y: str = attr.ib(default="linear", validator=attr.validators.in_(["linear", "log"]))
+    norm: str = attr.ib(default="linear", validator=attr.validators.in_(["linear", "log"]))
     cmap: Optional[str] = None
 
     # Internals
-    x_edges: unyt.unyt_array = None
-    y_edges: unyt.unyt_array = None
-    grid: unyt.unyt_array = None
-
-    # Validators
-    _convert_limits_x = validator("limits_x", allow_reuse=True)(quantity_list_validator)
-    _convert_limits_y = validator("limits_y", allow_reuse=True)(quantity_list_validator)
+    x_edges: unyt.unyt_array = attr.ib(init=False)
+    y_edges: unyt.unyt_array = attr.ib(init=False)
+    grid: unyt.unyt_array = attr.ib(init=False)
 
     def preprocess(self):
         """

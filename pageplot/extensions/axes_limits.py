@@ -14,21 +14,17 @@ from typing import List, Union
 from matplotlib.pyplot import Figure, Axes
 
 import unyt
+import attr
 
-
+@attr.s(auto_attribs=True)
 class AxesLimitsExtension(PlotExtension):
     """
     Sets the axes limits and units that the final
     figure will be displayed in.
     """
 
-    limits_x: List[Union[str, unyt.unyt_quantity, unyt.unyt_array, None]] = [None, None]
-    limits_y: List[Union[str, unyt.unyt_quantity, unyt.unyt_array, None]] = [None, None]
-
-    # Validators
-    _convert_limits = validator("limits_x", "limits_y", allow_reuse=True)(
-        quantity_list_validator
-    )
+    limits_x: List[Union[str, unyt.unyt_quantity, unyt.unyt_array, None]] = attr.ib(default=[None, None], converter=quantity_list_validator)
+    limits_y: List[Union[str, unyt.unyt_quantity, unyt.unyt_array, None]] = attr.ib(default=[None, None], converter=quantity_list_validator)
 
     def blit(self, fig: Figure, axes: Axes):
         try:

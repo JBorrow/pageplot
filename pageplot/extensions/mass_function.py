@@ -28,7 +28,9 @@ from velociraptor.tools.mass_functions import (
 import unyt
 import numpy as np
 
+import attr
 
+@attr.s(auto_attribs=True)
 class MassFunctionExtension(PlotExtension):
     """
     Basic & Adaptive mass functions.
@@ -37,42 +39,20 @@ class MassFunctionExtension(PlotExtension):
     always logrithmic in mass functions anyway.
     """
 
-    limits: List[Union[str, unyt.unyt_quantity, unyt.unyt_array]]
-    bins: int = 10
-    display_as: Union[str, Callable] = "default"
-    adaptive: bool = False
-    minimum_in_bin: int = 3
+    limits: List[Union[str, unyt.unyt_quantity, unyt.unyt_array]] = attr.ib(default=[None, None], converter=quantity_list_validator)
+    bins: int = attr.ib(default=10, converter=int)
+    display_as: Union[str, Callable] = attr.ib(default="default", converter=line_display_as_to_function_validator)
+    adaptive: bool = attr.ib(default=False, converter=bool)
+    minimum_in_bin: int = attr.ib(default=3, converter=int)
     box_volume: Union[unyt.unyt_quantity, str, None] = None
 
     # Internals
-    edges: unyt.unyt_array = None
-    centers: unyt.unyt_array = None
-    values: unyt.unyt_array = None
-    errors: unyt.unyt_array = None
+    edges: unyt.unyt_array = attr.ib(init=False)
+    centers: unyt.unyt_array = attr.ib(init=False)
+    values: unyt.unyt_array = attr.ib(init=False)
+    errors: unyt.unyt_array = attr.ib(init=False)
 
-    # Validators
-    _convert_limits = validator("limits", allow_reuse=True)(quantity_list_validator)
-    _convert_display_as = validator("display_as", always=True, allow_reuse=True)(
-        line_display_as_to_function_validator
-    )
-
-    @validator("box_volume", always=True)
-    def _grab_box_volume_from_metadata(cls, v):
-        if v is None:
-            return None
-        else:
-            # This is extremely unlikely given we read it straight out of JSON
-            if not isinstance(v, unyt.unyt_quantity):
-                num, unit = v.split(" ", 1)
-                return unyt.unyt_quantity(float(num), unit)
-            else:
-                return v
-
-    def preprocess(self):
-        """
-        Pre-processes by creating the mass function line.
-        """
-
+    def __attrs_post_init__(self):
         if self.box_volume is None:
             try:
                 self.box_volume = self.metadata.box_volume
@@ -84,6 +64,16 @@ class MassFunctionExtension(PlotExtension):
                         + "the extension by using the box_volume key with appropriate "
                         + "units, but it is not recommended.",
                     )
+        else:
+            if not isinstance(self.box_volume, unyt.unyt_quantity):
+                num, unit = self.box_volume.split(" ", 1)
+                self.box_volume = unyt.unyt_quantity(float(num), unit)
+
+
+    def preprocess(self):
+        """
+        Pre-processes by creating the mass function line.
+        """
 
         if self.y is not None:
             raise PagePlotIncompatbleExtension(

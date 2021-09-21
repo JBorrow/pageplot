@@ -3,18 +3,19 @@ Model for extensions that perform plotting and
 data production duties.
 """
 
+from attr.setters import convert
 from pageplot.config import GlobalConfig
 from pageplot.io.spec import MetadataSpecification
-from pydantic import BaseModel
 
 from typing import Optional, Dict, Any
 
+import attr
 import unyt
 import matplotlib.pyplot as plt
 
-
-class PlotExtension(BaseModel):
-    name: str
+@attr.s(auto_attribs=True)
+class PlotExtension:
+    name: str = attr.ib(converter=str)
     config: GlobalConfig
     metadata: MetadataSpecification
 
@@ -67,7 +68,3 @@ class PlotExtension(BaseModel):
         """
 
         return None
-
-    class Config:
-        # Required to allow typing for unyt.unyt_array
-        arbitrary_types_allowed = True
