@@ -59,16 +59,7 @@ class MassFunctionExtension(PlotExtension):
     @validator("box_volume", always=True)
     def _grab_box_volume_from_metadata(cls, v):
         if v is None:
-            try:
-                return cls.metadata.box_volume
-            except AttributeError:
-                raise PagePlotMissingMetadataError(
-                    cls,
-                    "Missing box_volume from I/O metadata and as such cannot create "
-                    + "mass function. This can additionally be supplied as part of "
-                    + "the extension by using the box_volume key with appropriate "
-                    + "units, but it is not recommended.",
-                )
+            return None
         else:
             # This is extremely unlikely given we read it straight out of JSON
             if not isinstance(v, unyt.unyt_quantity):
@@ -81,6 +72,18 @@ class MassFunctionExtension(PlotExtension):
         """
         Pre-processes by creating the mass function line.
         """
+
+        if self.box_volume is None:
+            try:
+                self.box_volume = self.metadata.box_volume
+            except AttributeError:
+                raise PagePlotMissingMetadataError(
+                        self,
+                        "Missing box_volume from I/O metadata and as such cannot create "
+                        + "mass function. This can additionally be supplied as part of "
+                        + "the extension by using the box_volume key with appropriate "
+                        + "units, but it is not recommended.",
+                    )
 
         if self.y is not None:
             raise PagePlotIncompatbleExtension(
