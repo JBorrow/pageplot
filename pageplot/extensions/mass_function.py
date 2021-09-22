@@ -30,6 +30,7 @@ import numpy as np
 
 import attr
 
+
 @attr.s(auto_attribs=True)
 class MassFunctionExtension(PlotExtension):
     """
@@ -39,9 +40,13 @@ class MassFunctionExtension(PlotExtension):
     always logrithmic in mass functions anyway.
     """
 
-    limits: List[Union[str, unyt.unyt_quantity, unyt.unyt_array]] = attr.ib(default=[None, None], converter=quantity_list_validator)
+    limits: List[Union[str, unyt.unyt_quantity, unyt.unyt_array]] = attr.ib(
+        default=[None, None], converter=quantity_list_validator
+    )
     bins: int = attr.ib(default=10, converter=int)
-    display_as: Union[str, Callable] = attr.ib(default="default", converter=line_display_as_to_function_validator)
+    display_as: Union[str, Callable] = attr.ib(
+        default="default", converter=line_display_as_to_function_validator
+    )
     adaptive: bool = attr.ib(default=False, converter=bool)
     minimum_in_bin: int = attr.ib(default=3, converter=int)
     box_volume: Union[unyt.unyt_quantity, str, None] = None
@@ -58,17 +63,16 @@ class MassFunctionExtension(PlotExtension):
                 self.box_volume = self.metadata.box_volume
             except AttributeError:
                 raise PagePlotMissingMetadataError(
-                        self,
-                        "Missing box_volume from I/O metadata and as such cannot create "
-                        + "mass function. This can additionally be supplied as part of "
-                        + "the extension by using the box_volume key with appropriate "
-                        + "units, but it is not recommended.",
-                    )
+                    self,
+                    "Missing box_volume from I/O metadata and as such cannot create "
+                    + "mass function. This can additionally be supplied as part of "
+                    + "the extension by using the box_volume key with appropriate "
+                    + "units, but it is not recommended.",
+                )
         else:
             if not isinstance(self.box_volume, unyt.unyt_quantity):
                 num, unit = self.box_volume.split(" ", 1)
                 self.box_volume = unyt.unyt_quantity(float(num), unit)
-
 
     def preprocess(self):
         """

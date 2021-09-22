@@ -154,13 +154,13 @@ class WebpageCreator(object):
 
         self.plot_container = plot_container
 
-
-        metadata = {name: plot.serialize()["metadata"] for name, plot in self.plot_container.plots.items()}
+        metadata = {
+            name: plot.serialize()["metadata"]
+            for name, plot in self.plot_container.plots.items()
+        }
 
         # Unique sections
-        sections = {
-            md.get("section", "Uncategorised")  for md in metadata.values()
-        }
+        sections = {md.get("section", "Uncategorised") for md in metadata.values()}
         print(sections)
 
         for section in sections:
@@ -169,7 +169,9 @@ class WebpageCreator(object):
                     filename=f"{name}.png",
                     title=md.get("title", ""),
                     caption=md.get("caption", ""),
-                    hash=abs(hash(str(md.get("title", "")) + str(md.get("caption", "")))),
+                    hash=abs(
+                        hash(str(md.get("title", "")) + str(md.get("caption", "")))
+                    ),
                 )
                 for name, md in metadata.items()
                 if md.get("section", "Uncategorised") == section

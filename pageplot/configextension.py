@@ -5,6 +5,7 @@ circular imports.
 
 import attr
 
+
 @attr.s(auto_attribs=True)
 class ConfigExtension:
     """

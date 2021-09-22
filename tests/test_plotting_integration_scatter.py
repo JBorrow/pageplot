@@ -103,6 +103,7 @@ def test_integration_hist(show_plot=True):
     if not show_plot:
         os.remove(output_path)
 
+
 def test_integration_mf(show_plot=True):
     # First generate some test data
     data_file = Path("test.hdf5")
@@ -121,7 +122,7 @@ def test_integration_mf(show_plot=True):
             "mass_function": {
                 "limits": ["0.01 Solar_Mass", "1.0 Solar_Mass"],
                 "display_as": "shaded",
-                "box_volume": "12 Mpc**3"
+                "box_volume": "12 Mpc**3",
             },
         },
         x="XDataset Solar_Mass",

@@ -27,17 +27,24 @@ class PagePlotRunner:
 
     config_filename: Path = attr.ib(converter=Path)
     data: IOSpecification
-    plot_filenames: List[Path] = attr.ib(factory=list, converter=lambda x: [Path(a) for a in x])
+    plot_filenames: List[Path] = attr.ib(
+        factory=list, converter=lambda x: [Path(a) for a in x]
+    )
 
-    file_extension: str = attr.ib(default=None, converter=attr.converters.default_if_none("png"))
+    file_extension: str = attr.ib(
+        default=None, converter=attr.converters.default_if_none("png")
+    )
     output_path: Path = attr.ib(default=Path("."), converter=Path)
 
-    additional_plot_extensions: Optional[Dict[str, PlotExtension]] = attr.ib(factory=dict)
-    additional_config_extensions: Optional[Dict[str, ConfigExtension]] = attr.ib(factory=dict)
+    additional_plot_extensions: Optional[Dict[str, PlotExtension]] = attr.ib(
+        factory=dict
+    )
+    additional_config_extensions: Optional[Dict[str, ConfigExtension]] = attr.ib(
+        factory=dict
+    )
 
     config: GlobalConfig = attr.ib(init=False)
     plot_container: PlotContainer = attr.ib(init=False)
-
 
     def load_config(self) -> GlobalConfig:
         """
@@ -80,7 +87,18 @@ class PagePlotRunner:
                         name, f"Duplicate plot name {name} found."
                     )
                 else:
-                    kwargs = {name: plot.pop(name, None) for name in ["x", "y", "z", "x_units", "y_units", "z_units", "mask"]}
+                    kwargs = {
+                        name: plot.pop(name, None)
+                        for name in [
+                            "x",
+                            "y",
+                            "z",
+                            "x_units",
+                            "y_units",
+                            "z_units",
+                            "mask",
+                        ]
+                    }
 
                     plot_model = PlotModel(
                         name=name,
@@ -113,7 +131,7 @@ class PagePlotRunner:
         self.plot_container.run_extensions()
         self.plot_container.create_figures()
 
-    def create_webpage(self, webpage_filename: Path=Path("index.html")):
+    def create_webpage(self, webpage_filename: Path = Path("index.html")):
         """
         Webpage output, links the plots together.
 
@@ -142,13 +160,4 @@ class PagePlotRunner:
         """
 
         with open(serialized_data_filename, "w") as handle:
-            json.dump(
-
-                self.plot_container.serialize(), handle)
-
-
-
-
-
-
-
+            json.dump(self.plot_container.serialize(), handle)

@@ -22,11 +22,21 @@ import math
 
 @attr.s(auto_attribs=True)
 class MedianLineExtension(PlotExtension):
-    limits: List[Union[str, unyt.unyt_quantity, unyt.unyt_array]] = attr.ib(default=None, converter=quantity_list_validator)
+    limits: List[Union[str, unyt.unyt_quantity, unyt.unyt_array]] = attr.ib(
+        default=None, converter=quantity_list_validator
+    )
     bins: int = attr.ib(default=10, converter=int)
-    spacing: str = attr.ib(default=None, converter=attr.converters.default_if_none("linear"), validator=attr.validators.in_(["linear", "log"]))
-    percentiles: List[float] = attr.ib(default=[10.0, 90.0], converter=lambda x: [float(a) for a in x])
-    display_as: Union[str, Callable] = attr.ib(default="default", converter=line_display_as_to_function_validator)
+    spacing: str = attr.ib(
+        default=None,
+        converter=attr.converters.default_if_none("linear"),
+        validator=attr.validators.in_(["linear", "log"]),
+    )
+    percentiles: List[float] = attr.ib(
+        default=[10.0, 90.0], converter=lambda x: [float(a) for a in x]
+    )
+    display_as: Union[str, Callable] = attr.ib(
+        default="default", converter=line_display_as_to_function_validator
+    )
 
     # Internals
     edges: unyt.unyt_array = None

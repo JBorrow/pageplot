@@ -45,7 +45,6 @@ class IOSpecification:
     def __attrs_post_init__(self):
         self.metadata = self.metadata_specification(filename=self.filename)
 
-
     def data_from_string(
         self,
         path: Optional[str],

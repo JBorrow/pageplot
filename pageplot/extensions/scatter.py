@@ -9,6 +9,7 @@ from matplotlib.pyplot import Figure, Axes
 
 import attr
 
+
 @attr.s(auto_attribs=True)
 class ScatterExtension(PlotExtension):
     def blit(self, fig: Figure, axes: Axes):

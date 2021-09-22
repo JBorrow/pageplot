@@ -16,6 +16,7 @@ from matplotlib.pyplot import Figure, Axes
 import unyt
 import attr
 
+
 @attr.s(auto_attribs=True)
 class AxesLimitsExtension(PlotExtension):
     """
@@ -23,8 +24,12 @@ class AxesLimitsExtension(PlotExtension):
     figure will be displayed in.
     """
 
-    limits_x: List[Union[str, unyt.unyt_quantity, unyt.unyt_array, None]] = attr.ib(default=[None, None], converter=quantity_list_validator)
-    limits_y: List[Union[str, unyt.unyt_quantity, unyt.unyt_array, None]] = attr.ib(default=[None, None], converter=quantity_list_validator)
+    limits_x: List[Union[str, unyt.unyt_quantity, unyt.unyt_array, None]] = attr.ib(
+        default=[None, None], converter=quantity_list_validator
+    )
+    limits_y: List[Union[str, unyt.unyt_quantity, unyt.unyt_array, None]] = attr.ib(
+        default=[None, None], converter=quantity_list_validator
+    )
 
     def blit(self, fig: Figure, axes: Axes):
         try:

@@ -13,6 +13,7 @@ import attr
 import unyt
 import matplotlib.pyplot as plt
 
+
 @attr.s(auto_attribs=True)
 class PlotExtension:
     name: str = attr.ib(converter=str)

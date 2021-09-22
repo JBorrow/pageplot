@@ -9,12 +9,15 @@ from typing import Any, Dict
 
 import attr
 
+
 @attr.s(auto_attribs=True)
 class PlotContainer:
     data: IOSpecification
     plots: Dict[str, PlotModel]
 
-    file_extension: str = attr.ib(default=None, converter=attr.converters.default_if_none("png"))
+    file_extension: str = attr.ib(
+        default=None, converter=attr.converters.default_if_none("png")
+    )
     output_path: Path = attr.ib(default=Path("."), converter=Path)
 
     def setup_figures(self):

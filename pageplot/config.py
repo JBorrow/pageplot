@@ -21,7 +21,6 @@ class GlobalConfig:
 
     extensions: Dict[str, Dict[str, Any]] = {}
 
-
     def __attrs_post_init__(self):
         # Use the stylesheet
         if self.stylesheet is not None:
@@ -34,14 +33,14 @@ class GlobalConfig:
         else:
             unyt.matplotlib_support.disable()
 
-
     @unyt_label_style.validator
     def _check_valid_label_style(self, _, value):
         if value not in ["[]", "()", "/"]:
             raise ValueError("You must choose one of [], (), or / for the unyt style.")
 
-
-    def run_extensions(self, additional_extensions: Optional[Dict[str, ConfigExtension]] = None):
+    def run_extensions(
+        self, additional_extensions: Optional[Dict[str, ConfigExtension]] = None
+    ):
         """
         Sets up the internal extensions and affixes them to the
         object.

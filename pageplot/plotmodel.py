@@ -88,7 +88,9 @@ class PlotModel(BaseModel):
                 if (associated_data := getattr(self, name[0])) is None:
                     units[name] = unyt.unyt_quantity(1.0, None)
                 else:
-                    units[name] = unyt.unyt_quantity(1.0, associated_data.split(" ", 1)[1])
+                    units[name] = unyt.unyt_quantity(
+                        1.0, associated_data.split(" ", 1)[1]
+                    )
             else:
                 units[name] = unyt.unyt_quantity(1.0, value)
 
@@ -168,7 +170,6 @@ class PlotModel(BaseModel):
         serialized = {name: ext.serialize() for name, ext in self.extensions.items()}
 
         return serialized
-
 
     def finalize(self):
         """

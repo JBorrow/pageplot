@@ -8,6 +8,7 @@ from matplotlib.pyplot import Figure, Axes
 
 import attr
 
+
 @attr.s(auto_attribs=True)
 class ScaleAxesExtension(PlotExtension):
     """

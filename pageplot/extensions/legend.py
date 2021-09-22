@@ -9,6 +9,7 @@ from pageplot.extensionmodel import PlotExtension
 
 import attr
 
+
 @attr.s(auto_attribs=True)
 class LegendExtension(PlotExtension):
     on: bool = True

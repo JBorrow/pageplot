@@ -16,6 +16,7 @@ import math
 
 import attr
 
+
 @attr.s(auto_attribs=True)
 class TwoDimensionalHistogramExtension(PlotExtension):
     """
@@ -24,12 +25,22 @@ class TwoDimensionalHistogramExtension(PlotExtension):
     versions are not sustainable.
     """
 
-    limits_x: List[Union[str, unyt.unyt_quantity, unyt.unyt_array]] = attr.ib(default=None, converter=quantity_list_validator)
-    limits_y: List[Union[str, unyt.unyt_quantity, unyt.unyt_array]] = attr.ib(default=None, converter=quantity_list_validator)
+    limits_x: List[Union[str, unyt.unyt_quantity, unyt.unyt_array]] = attr.ib(
+        default=None, converter=quantity_list_validator
+    )
+    limits_y: List[Union[str, unyt.unyt_quantity, unyt.unyt_array]] = attr.ib(
+        default=None, converter=quantity_list_validator
+    )
     bins: int = attr.ib(default=10, converter=int)
-    spacing_x: str = attr.ib(default="linear", validator=attr.validators.in_(["linear", "log"]))
-    spacing_y: str = attr.ib(default="linear", validator=attr.validators.in_(["linear", "log"]))
-    norm: str = attr.ib(default="linear", validator=attr.validators.in_(["linear", "log"]))
+    spacing_x: str = attr.ib(
+        default="linear", validator=attr.validators.in_(["linear", "log"])
+    )
+    spacing_y: str = attr.ib(
+        default="linear", validator=attr.validators.in_(["linear", "log"])
+    )
+    norm: str = attr.ib(
+        default="linear", validator=attr.validators.in_(["linear", "log"])
+    )
     cmap: Optional[str] = None
 
     # Internals
