@@ -120,6 +120,135 @@ The library can then control the way that data is processed, and the styling
 and output options for the figures in a fully consistent way.
 
 
-
 Interfacing With Page Plot
 --------------------------
+
+Page Plot is built out of three major components:
+
+1. A data object that conforms to the `IOSpecification`. This effectively needs
+   a way of taking your chosen file and loading a relevant one dimensional array
+   (with included units using `unyt`) from a string. The string is what is given
+   to the `x`, `y`, and `z` parameters in the JSON.
+2. A series of extensions (built in, and external) that conform to the
+   `PlotExtension` specification. These can compute derived data, interact
+   directly with the `matplotlib.Axes` and `matplotlib.Figure` objects, and
+   even with the filesystem. The attributes of the `PlotExtension` objects
+   correspond directly to the JSON attributes in the configuration files.
+3. Glue that holds all of these pieces together, and even allows for the
+   production of webpages that allow for all figures to be displayed alongside
+   each other as a summary page.
+
+
+About Those Webpages
+--------------------
+
+One of the built in extensions in `PagePlot` is called `metadata`, and has the
+specification:
+
+```json
+"metadata" {
+    "comment": "Descriptive comment, saved out to serialized data",
+    "title": "Plot title, for use on webpage",
+    "caption": "Wepbage caption for plot",
+    "section": "Section on webpage to use",
+}
+```
+
+This metadata is primarily used to populate the webpages that `PagePlot` is
+able to produce (hence the name `PagePlot`). These pages are split into
+sections, with each figure in each section having a title and caption. The
+pages are made out of a simple, static, HTML in a single page, so sharing the
+folder of plot files and the `index.html` is enough to fully share a
+diagnostic output. 
+
+
+Putting it all Together
+-----------------------
+
+Running `PagePlot` is very simple. At the moment, as the API is a little in flux,
+there's no specific command line tool (but there will be one in the future)!
+
+The script below takes in a data filename from the first argument, and runs all
+of the `PagePlot` infrastructure.
+
+```python
+"""
+Runs PagePlot.
+"""
+
+from pathlib import Path
+from pageplot.runner import PagePlotRunner
+from pageplot.io.areposubfind import IOAREPOSubFind
+import sys
+
+data_filename = Path(sys.argv[1])
+
+config_loc = Path("/Global/Path/To/Config")
+config_files = list(config_loc.glob("*.json"))
+global_config_file = config_loc / Path("config.json")
+
+config_files.remove(global_config_file)
+
+runner = PagePlotRunner(
+    config_filename=global_config_file,
+    data=IOAREPOSubFind(filename=data_filename),
+    plot_filenames=config_files,
+)
+
+runner.create_figures()
+runner.create_webpage()
+```
+
+In `/Global/Path/To/Config/black_holes.json`, we have:
+```json
+{   
+    "stellar_mass_black_hole_mass": {
+        "two_dimensional_histogram": {
+            "limits_x": ["1e7 Solar_Mass", "1e11 Solar_Mass"],
+            "limits_y": ["1e5 Solar_Mass", "1e9 Solar_Mass"],
+            "spacing_x": "log",
+            "spacing_y": "log",
+            "bins": 128,
+            "norm": "log"
+        },
+        "median_line": {
+            "limits": ["1e7 Solar_Mass", "1e11 Solar_Mass"],
+            "display_as": "shaded",
+            "spacing": "log",
+            "bins": 20
+        },
+        "scale_axes": {
+            "scale_x": "log",
+            "scale_y": "log"
+        },
+        "axes_limits": {
+            "limits_x": ["1e7 Solar_Mass", "1e11 Solar_Mass"],
+            "limits_y": ["1e5 Solar_Mass", "1e9 Solar_Mass"]
+        },
+        "legend": {},
+        "x": "Subhalo/SubhaloMassInRadType[:, 4]",
+        "y": "Subhalo/SubhaloBHMass",
+        "x_units": "Solar_Mass",
+        "y_units": "Solar_Mass",
+        "metadata": {
+            "caption": "Stellar Mass-Black Hole Mass relation. The black hole mass here gives the sum of all of the black hole masses in the halo, rather than the mass of the SMBH.",
+            "section": "Black Holes",
+            "title": "Stellar Mass-Black Hole Mass Relation"
+        }
+    }
+}
+
+```
+As well as a small config file `config.json`,
+```json
+{
+    "stylesheet": "/Global/Path/To/Config/mnras.mplstyle"
+}
+```
+There are other plot specification files included, too, but they're omitted
+here for brevity.
+
+Once ran on an appropriate (Illustris-TNG) data file, for which there
+is a built in `IOSpecification` called `IOAREPOSubFind`, this produces
+a webpage that looks like:
+![Example PagePlot output](example_screenshot.png)
