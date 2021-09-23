@@ -4,13 +4,9 @@ The base top-level plot model class.
 From this all data and plotting flow.
 """
 
-from operator import truediv
-
-from pydantic.class_validators import validator
 from pageplot.exceptions import PagePlotParserError
 from pathlib import Path
 from typing import Any, Optional, Dict, List, Union
-from pydantic import BaseModel
 
 from pageplot.extensionmodel import PlotExtension
 from pageplot.extensions import built_in_extensions
@@ -21,9 +17,55 @@ from pageplot.mask import get_mask
 import matplotlib.pyplot as plt
 import numpy as np
 import unyt
+import attr
 
 
-class PlotModel(BaseModel):
+@attr.s
+class PlotModel:
+    """
+    Model describing an individual plot. De-serializes the input
+    json describing an individual figure's extension values.
+
+    To use this, you'll need to initialise it with the configuration
+    (for all the extensions!), and then associate the data with
+    the appropraite method. The plots can then be created using the
+    methods in the following order:
+
+    ``setup_figures`` - creates Figure and Axes objects
+    ``run_extensions`` - runs all of the extensions' ``preprocess`` steps
+    ``perform_blitting`` - runs the extensions' ``blit`` functions
+    ``save`` - writes out the figures to disk
+    ``finalize`` - closes the Figure object
+
+    You can also serialize the contents of the whole figure to a dictionary
+    with the ``serialize`` object.
+
+    Parameters
+    ----------
+
+    name: str
+        Plot name. This is the filename of the plot (without file extension).
+
+    config: GlobalConfig
+        Global configuration object.
+
+    plot_spec: Dict[str, Any]
+        Data controlling the behaviour of each extension. The keys should
+        be the same as the used extensions. Mis-matches will raise a
+        ``PagePlotParserError``.
+
+    x, y, z: str, optional
+        Strings to be passed to the data to load appropriate x, y, and z
+        data. Here only x is required.
+
+    x_units, y_units, z_units: Union[str, None, unyt.unyt_quantity]
+        Expected output units for the plot, to be parsed.
+
+    mask: str, optional
+        Mask text (see :func:`get_mask`).
+
+
+    """
     name: str
     config: GlobalConfig
     plot_spec: Dict[str, Any]
@@ -39,10 +81,10 @@ class PlotModel(BaseModel):
 
     mask: Optional[str] = None
 
-    data: IOSpecification = None
-    fig: plt.Figure = None
-    axes: plt.Axes = None
-    extensions: Dict[str, PlotExtension] = None
+    data: IOSpecification = attr.ib(init=False)
+    fig: plt.Figure = attr.ib(init=False)
+    axes: plt.Axes = attr.ib(init=False)
+    extensions: Dict[str, PlotExtension] = attr.ib(init=False)
 
     def associate_data(self, data: IOSpecification):
         """

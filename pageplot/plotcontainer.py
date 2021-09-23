@@ -2,6 +2,7 @@
 PlotModel conatiner, used to 'create all the plots'.
 """
 
+from pageplot.extensionmodel import PlotExtension
 from pathlib import Path
 from pageplot.io.spec import IOSpecification
 from pageplot.plotmodel import PlotModel
@@ -12,6 +13,31 @@ import attr
 
 @attr.s(auto_attribs=True)
 class PlotContainer:
+    """
+    Plot container, containing many instances of :cls:`PlotModel`.
+
+    Used to create all of the figures in a uniform way.
+
+    Parameters
+    ----------
+
+    data: IOSpecification
+        Data conforming to the specification to be passed to all of the
+        individual ``plot``s.
+
+    plots: Dict[str, PlotModel]
+        Dictionary (with keys the output names) of plots.
+
+    file_extension: str
+        File extension to use when writing out the figures.
+
+    output_path: Path
+        Where to write the figures. Defaults to the current working directory.
+
+    additional_extensions: Dict[str, PlotExtension]
+        Additional plot extensions to use with the given figures.
+    """
+
     data: IOSpecification
     plots: Dict[str, PlotModel]
 
@@ -19,6 +45,8 @@ class PlotContainer:
         default=None, converter=attr.converters.default_if_none("png")
     )
     output_path: Path = attr.ib(default=Path("."), converter=Path)
+
+    additional_extensions: Dict[str, PlotExtension] = attr.ib(default=attr.Factory(dict))
 
     def setup_figures(self):
         """
@@ -36,7 +64,7 @@ class PlotContainer:
         """
 
         for plot in self.plots.values():
-            plot.run_extensions()
+            plot.run_extensions(additional_extensions=self.additional_extensions)
 
     def create_figures(self):
         """

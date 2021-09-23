@@ -36,6 +36,15 @@ def get_mask(
     /My/Favourite/Dataset kpc < 1.0 Mpc
 
     for the in-built h5py IO Specification.
+
+    Parameters
+    ----------
+
+    data: IOSpecification
+        The data file to read from
+
+    mask_text: str | None
+        Mask text matching the above specification.
     """
 
     if mask_text is None:

@@ -20,9 +20,51 @@ import attr
 @attr.s(auto_attribs=True)
 class PagePlotRunner:
     """
-    Main runner class for the page plot library.
+    Highest-level object interface to the library. This is probably
+    where to start if you're just looking to make some figures.
 
-    This takes in filenames and spits out plots.
+    Takes in filenames specifying configuration objects, and allows
+    easy serialization, webpage creation, and of course, figure creation.
+
+    Parameters
+    ----------
+
+    config_filename: Path
+        Filename of the configuration JSON. Used to generate the
+        :class:`GlobalConfig` object. Used to specifiy, e.g., the
+        stylesheet that you are using.
+    
+    data: IOSpecification
+        Open data file that conforms to the specification. This will be
+        handed to the plots down the line. Note that it just has to inherit
+        from :class:`IOSpecification` and conform to the spec, not just be
+        an instance of :class:`IOSpecification`.
+
+    plot_filenames: List[Path]
+        Filenames of the plot specification JSON. These will be concatenated
+        and converted into a :class:`PlotContainer` containing individual instances
+        of :class:`PlotModel`.
+
+    file_extension: str, optional
+        The extension of the resulting plots. Can be anything that
+        ``matplotlib`` will output on your machine. By default this is ``png``
+    
+    output_path: Path, optional
+        Where to save the output figures (and html). Should already exist,
+        or an error will be raised. By default, this is the current working
+        directory.
+
+    additional_plot_extensions: Dict[str, PlotExtension]
+        Additional extensions for the plots themselves. Will be shared amongst
+        all of the plot models generated. This allows you to hook into the
+        library and add custom plotting code. On the specification side,
+        these will be read like any of the default extensions from your JSON.
+
+    additional_config_extensions: Dict[str, ConfigExtension]
+        Additional configuration extensions. This allows you to surface
+        additional global variables (e.g. a fixed value you would like to have
+        used to denote a fixed line on a plot). These will then be read from
+        the extensions section in the ``config_filename``.
     """
 
     config_filename: Path = attr.ib(converter=Path)
@@ -48,7 +90,7 @@ class PagePlotRunner:
 
     def load_config(self) -> GlobalConfig:
         """
-        Loads the config from file.
+        Loads the config from file. Happens automatically on init.
         """
 
         with open(self.config_filename, "r") as handle:
@@ -64,7 +106,7 @@ class PagePlotRunner:
     def load_plots(self) -> PlotContainer:
         """
         Loads the figures from the plot filenames. Sets the internal ``plot_container``
-        property, and returns the plot container.
+        property, and returns the plot container. Happens automatically on init.
 
         May raise the ``PagePlotParserError`` if there are duplicate names.
 
