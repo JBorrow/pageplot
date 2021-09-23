@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name="pageplot",
-    version="0.0.0",
+    version="0.0.1",
     description="",
     url="",
     author="Josh Borrow",
@@ -16,5 +16,5 @@ setuptools.setup(
         "License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)",
         "Operating System :: OS Independent",
     ],
-    install_requires=["pydantic", "h5py"],
+    install_requires=["attrs", "h5py", "velociraptor", "matplotlib", "numpy", "scipy", "unyt"],
 )
