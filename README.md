@@ -8,22 +8,22 @@ down to a series of scatter plots (with and without binning lines) alongside
 some additional data from external sources.
 
 There are a number of ways to do this; you can maintain a set of scripts to
-create each plot, or use a dashboard system (like [Plotly Dash]
-(https://dash.plotly.com/)). Both of these come along with downsides; for the
-individual scripts, a lot of time can be spent maintaining shared code that
-is frequently copied and pasted between scripts. Those scripts are
-essentially just boilerplate, with lots of calls to matplotlib's API, or a
-series of pandas calls. Dashboards are tricky in a HPC environment as they
-require hosting, and as such are significantly less portable.
+create each plot, or use a dashboard system (like
+[Plotly Dash](https://dash.plotly.com/)). Both of these come along with
+downsides; for the individual scripts, a lot of time can be spent maintaining
+shared code that is frequently copied and pasted between scripts. Those
+scripts are essentially just boilerplate, with lots of calls to matplotlib's
+API, or a series of pandas calls. Dashboards are tricky in a HPC environment
+as they require hosting, and as such are significantly less portable.
 
 PagePlot attempts to slot in-between these solutions. It is a low-code
 solution, with the code being used to describe the data format to PagePlot,
 with no-code plotting. The figures can then be used to create a static,
 portable, dashboard.
 
-PagePlot attempts to succeed the successful [swift-pipeline]
-(https://github.com/swiftsim/pipeline) project and generalise it for use
-throughout the community.
+PagePlot attempts to succeed the successful
+[swift-pipeline](https://github.com/swiftsim/pipeline) project and
+generalise it for use throughout the community.
 
 
 Codeless Plotting
@@ -120,3 +120,6 @@ The library can then control the way that data is processed, and the styling
 and output options for the figures in a fully consistent way.
 
 
+
+Interfacing With Page Plot
+--------------------------

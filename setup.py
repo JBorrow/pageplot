@@ -13,7 +13,7 @@ setuptools.setup(
     zip_safe=False,
     classifiers=[
         "Programming Language :: Python :: 3.9",
-        "License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)",
+        "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
     install_requires=["attrs", "h5py", "velociraptor", "matplotlib", "numpy", "scipy", "unyt"],

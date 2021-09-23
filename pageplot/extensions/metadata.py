@@ -32,6 +32,7 @@ class MetadataExtension(PlotExtension):
     section: str, optional
         The section to display this figure in on the webpage.
     """
+
     comment: Optional[str] = attr.ib(
         default=None, converter=attr.converters.default_if_none("")
     )

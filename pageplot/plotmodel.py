@@ -66,6 +66,7 @@ class PlotModel:
 
 
     """
+
     name: str
     config: GlobalConfig
     plot_spec: Dict[str, Any]

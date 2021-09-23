@@ -35,7 +35,6 @@ class VelociraptorDataConfigExtension(ConfigExtension):
     registration_name: str = "velociraptor_data"
 
 
-
 @attr.s(auto_attribs=True)
 class VelociraptorDataExtension(PlotExtension):
     """
@@ -45,8 +44,14 @@ class VelociraptorDataExtension(PlotExtension):
     ----------
 
     files: List[Path]
-        Filenames to 
+        Filenames to load data from. Relative paths to the ``data_path``
+        specified in the configuration extension.
+
+    scale_factor_bracket_width: float
+        How large of a bracket in ``a`` should be used to load the relevant
+        data? Only data overlapping with this bracket will be loaded.
     """
+
     files: List[Path] = attr.ib(
         default=attr.Factory(list), converter=lambda x: [Path(a) for a in x]
     )

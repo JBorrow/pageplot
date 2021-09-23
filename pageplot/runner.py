@@ -33,7 +33,7 @@ class PagePlotRunner:
         Filename of the configuration JSON. Used to generate the
         :class:`GlobalConfig` object. Used to specifiy, e.g., the
         stylesheet that you are using.
-    
+
     data: IOSpecification
         Open data file that conforms to the specification. This will be
         handed to the plots down the line. Note that it just has to inherit
@@ -48,7 +48,7 @@ class PagePlotRunner:
     file_extension: str, optional
         The extension of the resulting plots. Can be anything that
         ``matplotlib`` will output on your machine. By default this is ``png``
-    
+
     output_path: Path, optional
         Where to save the output figures (and html). Should already exist,
         or an error will be raised. By default, this is the current working

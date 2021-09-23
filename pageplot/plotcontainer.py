@@ -46,7 +46,9 @@ class PlotContainer:
     )
     output_path: Path = attr.ib(default=Path("."), converter=Path)
 
-    additional_extensions: Dict[str, PlotExtension] = attr.ib(default=attr.Factory(dict))
+    additional_extensions: Dict[str, PlotExtension] = attr.ib(
+        default=attr.Factory(dict)
+    )
 
     def setup_figures(self):
         """

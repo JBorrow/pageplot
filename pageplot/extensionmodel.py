@@ -36,7 +36,7 @@ class PlotExtension:
 
     name: str
         The name of this plot.
-    
+
     config: GlobalConfig
         The global configuration object.
 
@@ -58,6 +58,7 @@ class PlotExtension:
 
     Additional parameters will be added by implementers.
     """
+
     name: str = attr.ib(converter=str)
     config: GlobalConfig
     metadata: MetadataSpecification
