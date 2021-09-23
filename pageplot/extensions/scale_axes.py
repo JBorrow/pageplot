@@ -14,6 +14,23 @@ class ScaleAxesExtension(PlotExtension):
     """
     Scales the axes, passing through to matplotlib's
     set_xscale and set_yscale.
+
+    Parameters
+    ----------
+
+    scale_x: str, optional
+        Scale to use for the x-axis. Will accept anything matplotlib will
+        accept.
+
+    base_x: str, optional
+        The base to use in the case of a "log" axis.
+
+    scale_y: str, optional
+        Scale to use for the y-axis. Will accept anything matplotlib will
+        accept.
+
+    base_y: str, optional
+        The base to use in the case of a "log" axis.
     """
 
     # Scale in x (e.g. log) and base
@@ -36,3 +53,11 @@ class ScaleAxesExtension(PlotExtension):
             axes.set_yscale(self.scale_y)
 
         return
+
+    def serialize(self):
+        return {
+            "scale_x": self.scale_x,
+            "base_x": self.base_x,
+            "scale_y": self.scale_y,
+            "base_y": self.base_y,
+        }

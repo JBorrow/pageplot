@@ -22,6 +22,35 @@ import math
 
 @attr.s(auto_attribs=True)
 class MedianLineExtension(PlotExtension):
+    """
+    Median line that shows percentile ranges.
+
+    Parameters
+    ----------
+
+    limits: List[str]
+        The edge limits for the median line calculation. Should be
+        given using the usual syntax of e.g. ``["1e0 Msun", "1e10 Msun"]``.
+
+    bins: int, optional
+        Number of bins to use in the mass function. Usually we suggest
+        using around 0.2 dex wide bins. Default: 10.
+
+    spacing: str, optional
+        How to space the bins ("linear" or "log"). Defaults to "linear".
+
+    percentiles: List[float], optional
+        Which percentiles to display as the error bounds. Defaults to
+        10, 90.
+
+    display_as: str, optional
+        How to display the mass function line. There are three options,
+        ``default``, using the basic errorbar, ``shaded`` which shows the
+        error region as a shaded region, and ``points`` that does
+        not include a line at all. See :func:`line_display_as_to_function_validator`
+        for more details. Default: ... default.
+    """
+
     limits: List[Union[str, unyt.unyt_quantity, unyt.unyt_array]] = attr.ib(
         default=None, converter=quantity_list_validator
     )
@@ -100,7 +129,7 @@ class MedianLineExtension(PlotExtension):
 
     def blit(self, fig: Figure, axes: Axes):
         """
-        Essentially a pass-through for ``axes.scatter``.
+        Displays the median line on the figure.
         """
 
         self.display_as(axes=axes, x=self.centers, y=self.values, yerr=self.errors)

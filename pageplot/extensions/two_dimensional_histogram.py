@@ -23,12 +23,43 @@ class TwoDimensionalHistogramExtension(PlotExtension):
     A two dimensional background histogram for the figure. Note that this rasterises
     the output from matplotlib's pcolormesh function, as generally the non-raster
     versions are not sustainable.
+
+    Parameters
+    ----------
+
+    limits_x: List[str]
+        The edge limits for the histogram calculation (along x axis). Should be
+        given using the usual syntax of e.g. ``["1e0 Msun", "1e10 Msun"]``.
+
+    limits_y: List[str]
+        The edge limits for the histogram calculation (along y axis). Should be
+        given using the usual syntax of e.g. ``["1e0 Msun", "1e10 Msun"]``.
+
+    bins: int, optional
+        The number of bins in each dimension to use (always the same in both
+        dimensions)
+
+    spacing_x: str, optional
+        Spacing between bins in the x-direction. Can be linear, or log. Defaults
+        to linear.
+
+    spacing_y: str, optional
+        Spacing between bins in the y-direction. Can be linear, or log. Defaults
+        to linear.
+
+    norm: str, optional
+        Normalisation to use for the colour map. Can be linear or log. Defaults
+        to linear.
+
+    cmap: str, optional
+        Override for the choice of colour map used in the stylesheet.
+
     """
 
-    limits_x: List[Union[str, unyt.unyt_quantity, unyt.unyt_array]] = attr.ib(
+    limits_x: List[Union[unyt.unyt_quantity, unyt.unyt_array]] = attr.ib(
         default=None, converter=quantity_list_validator
     )
-    limits_y: List[Union[str, unyt.unyt_quantity, unyt.unyt_array]] = attr.ib(
+    limits_y: List[Union[unyt.unyt_quantity, unyt.unyt_array]] = attr.ib(
         default=None, converter=quantity_list_validator
     )
     bins: int = attr.ib(default=10, converter=int)
@@ -54,17 +85,17 @@ class TwoDimensionalHistogramExtension(PlotExtension):
         """
 
         if self.spacing_x == "linear":
-            raw_bin_edges_x = np.linspace(*self.limits_x, self.bins)
+            raw_bin_edges_x = np.linspace(*self.limits_x[:2], self.bins)
         else:
             raw_bin_edges_x = np.logspace(
-                *[math.log10(x) for x in self.limits_x], self.bins
+                *[math.log10(x) for x in self.limits_x[:2]], self.bins
             )
 
         if self.spacing_y == "linear":
-            raw_bin_edges_y = np.linspace(*self.limits_y, self.bins)
+            raw_bin_edges_y = np.linspace(*self.limits_y[:2], self.bins)
         else:
             raw_bin_edges_y = np.logspace(
-                *[math.log10(y) for y in self.limits_y], self.bins
+                *[math.log10(y) for y in self.limits_y[:2]], self.bins
             )
 
         self.x_edges = unyt.unyt_array(
@@ -113,6 +144,7 @@ class TwoDimensionalHistogramExtension(PlotExtension):
             "x_edges": self.x_edges,
             "y_edges": self.y_edges,
             "grid": self.grid,
+            "norm": self.norm,
             "metadata": {
                 "comment": "Edges and grid can be directly plotted with pcolormesh."
             },

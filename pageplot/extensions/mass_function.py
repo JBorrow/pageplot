@@ -12,10 +12,9 @@ from pageplot.exceptions import (
     PagePlotMissingMetadataError,
 )
 
-from typing import List, Optional, Union, Callable, Dict, Any
+from typing import List, Union, Callable, Dict, Any
 
 from matplotlib.pyplot import Figure, Axes
-from pydantic import validator
 
 # This should be removed in later versions as this dependency is _not_ necessary
 # as the code should be moved over to this library anyway.
@@ -38,16 +37,46 @@ class MassFunctionExtension(PlotExtension):
 
     Note that you cannot choose a linear bin width as bins are
     always logrithmic in mass functions anyway.
+
+    Parameters
+    ----------
+
+    limits: List[str]
+        The edge limits for the mass function calculation. Should be
+        given using the usual syntax of e.g. ``["1e0 Msun", "1e10 Msun"]``.
+
+    bins: int, optional
+        Number of bins to use in the mass function. Usually we suggest
+        using around 0.2 dex wide bins. Default: 10.
+
+    display_as: str, optional
+        How to display the mass function line. There are three options,
+        ``default``, using the basic errorbar, ``shaded`` which shows the
+        error region as a shaded region, and ``points`` that does
+        not include a line at all. See :func:`line_display_as_to_function_validator`
+        for more details. Default: ... default.
+
+    adaptive: bool, optional
+        Whether or not to adaptively size bins. This is on by default.
+
+    minimum_in_bin: int, optional
+        The minimum number of items in the bin to class it as valid. Non-valid
+        bins are excluded from the analysis. For adaptive bins, they are resized
+        so that they contain at minimum this number of items.
+
+    box_volume: unyt.unyt_quantity, optional
+        If the box volume cannot be read from the data file, you will need
+        to supply it here using the usual number / unit syntax.
     """
 
-    limits: List[Union[str, unyt.unyt_quantity, unyt.unyt_array]] = attr.ib(
+    limits: List[Union[unyt.unyt_quantity, unyt.unyt_array]] = attr.ib(
         default=[None, None], converter=quantity_list_validator
     )
     bins: int = attr.ib(default=10, converter=int)
-    display_as: Union[str, Callable] = attr.ib(
+    display_as: Callable = attr.ib(
         default="default", converter=line_display_as_to_function_validator
     )
-    adaptive: bool = attr.ib(default=False, converter=bool)
+    adaptive: bool = attr.ib(default=True, converter=bool)
     minimum_in_bin: int = attr.ib(default=3, converter=int)
     box_volume: Union[unyt.unyt_quantity, str, None] = None
 
@@ -114,7 +143,7 @@ class MassFunctionExtension(PlotExtension):
 
     def blit(self, fig: Figure, axes: Axes):
         """
-        Essentially a pass-through for ``axes.scatter``.
+        Writes the mass function line to the figure.
         """
 
         self.display_as(axes=axes, x=self.centers, y=self.values, yerr=self.errors)
@@ -122,6 +151,9 @@ class MassFunctionExtension(PlotExtension):
         return
 
     def serialize(self) -> Dict[str, Any]:
+        """
+        Saves the data to disk.
+        """
         return {
             "centers": self.centers,
             "values": self.values,

@@ -19,12 +19,34 @@ import attr
 
 @attr.s(auto_attribs=True)
 class VelociraptorDataConfigExtension(ConfigExtension):
-    registration_name: str = "velociraptor_data"
+    """
+    Configuration extension for the velociraptor data.
+
+    Parameters
+    ----------
+
+    data_path: Path, optional
+        The data path where the observational data is stored.
+        Helpful so you only need one copy of the observational
+        data repository.
+    """
+
     data_path: Path = attr.ib(default=Path("."), converter=Path)
+    registration_name: str = "velociraptor_data"
+
 
 
 @attr.s(auto_attribs=True)
 class VelociraptorDataExtension(PlotExtension):
+    """
+    Plots data from the velociraptor library onto the axes.
+
+    Parameters
+    ----------
+
+    files: List[Path]
+        Filenames to 
+    """
     files: List[Path] = attr.ib(
         default=attr.Factory(list), converter=lambda x: [Path(a) for a in x]
     )

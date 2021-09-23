@@ -12,6 +12,11 @@ import attr
 
 @attr.s(auto_attribs=True)
 class ScatterExtension(PlotExtension):
+    """
+    Include this if you would like the background to be 
+    a scatter plot. Note that this data is not serialized as
+    it is of unpredictable size.
+    """
     def blit(self, fig: Figure, axes: Axes):
         """
         Essentially a pass-through for ``axes.scatter``.

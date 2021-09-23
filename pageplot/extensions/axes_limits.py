@@ -5,7 +5,6 @@ axes.
 """
 
 from pageplot.exceptions import PagePlotParserError
-from pydantic import validator
 from pageplot.validators import quantity_list_validator
 from pageplot.extensionmodel import PlotExtension
 from typing import List, Union

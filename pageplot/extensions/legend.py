@@ -12,6 +12,11 @@ import attr
 
 @attr.s(auto_attribs=True)
 class LegendExtension(PlotExtension):
+    """
+    Adds a legend to the plot, with basic styling
+    options.
+    """
+    
     on: bool = True
     frame_on: Optional[bool] = None
     loc: Union[str, int] = "best"
