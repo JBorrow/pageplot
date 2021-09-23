@@ -20,7 +20,7 @@ import unyt
 import attr
 
 
-@attr.s
+@attr.s(auto_attribs=True)
 class PlotModel:
     """
     Model describing an individual plot. De-serializes the input

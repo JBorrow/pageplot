@@ -3,6 +3,7 @@ Global configuration and settings for a
 full run of PlotPage.
 """
 
+from pathlib import Path
 from typing import Any, Dict, Optional
 
 import attr
