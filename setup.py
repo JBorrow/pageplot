@@ -6,7 +6,7 @@ setuptools.setup(
     description="",
     url="",
     author="Josh Borrow",
-    author_email="josh@joshborrow.ciom",
+    author_email="josh@joshborrow.com",
     packages=setuptools.find_packages(),
     long_description="",
     long_description_content_type="text/markdown",
