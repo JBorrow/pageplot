@@ -5,7 +5,7 @@ Needs to loop over many, many files, so employs a parallel mapper to
 do that. These are typically latency limited on HPC systems.
 """
 
-from typing import Optional, Type, Dict, Any, Union
+from typing import Optional, Type, Dict, Any, Union, List
 
 import attr
 
@@ -13,6 +13,7 @@ from pageplot.exceptions import PagePlotParserError
 from .spec import IOSpecification, MetadataSpecification
 
 from glob import glob
+from pathlib import Path
 
 import h5py
 import unyt
@@ -165,6 +166,9 @@ class IOAREPOSubFind(IOSpecification):
     # Storage object that is lazy-loaded
     metadata: MetadataAREPOSubFind = None
 
+    # Internals
+    ordered_filenames: Optional[List[Path]] = None
+
     def get_unit(self, field: str) -> unyt.unyt_quantity:
         """
         Gets the appropriate unit for the field. Ensures trailing
@@ -178,19 +182,36 @@ class IOAREPOSubFind(IOSpecification):
 
         return self.metadata.unit_registry[search_field]
 
+    def get_ordered_filenames(self):
+        """
+        Stores the internal ``ordered_filenames``.
+        """
+
+        if self.filename.stem.endswith(".0"):
+            if self.ordered_filenames is None:
+                self.ordered_filenames = sorted(
+                    self.filename.parent.glob(
+                        self.filename.stem.replace(".0", r".*") + self.filename.suffix
+                    ),
+                    key=lambda x: int(x.stem.split(".")[-1]),
+                )
+
+        return
+
     def read_raw_field(self, field: str, selector: np.s_) -> np.array:
         """
         Reads a raw field from (potentially) many files.
         """
 
         if self.filename.stem.endswith(".0"):
+            if self.ordered_filenames is None:
+                self.get_ordered_filenames()
+
             read = []
 
             never_found = True
 
-            for path in self.filename.parent.glob(
-                self.filename.stem.replace(".0", r".*") + self.filename.suffix
-            ):
+            for path in self.ordered_filenames:
                 try:
                     with h5py.File(path, "r") as handle:
                         read.append(handle[field][selector])
