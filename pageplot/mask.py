@@ -66,10 +66,10 @@ def get_mask(
         if check in mask_text:
             data_name, compare = mask_text.split(check)
 
-            raw_data = data.data_from_string(data_name.strip())
+            raw_data = data.calculation_from_string(data_name.strip())
 
             value, unit = compare.strip().split(" ", 1)
 
             return op(raw_data, unyt.unyt_quantity(float(value), unit))
 
-    return data.data_from_string(mask_text).astype(bool)
+    return data.calculation_from_string(mask_text).astype(bool)

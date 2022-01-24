@@ -158,9 +158,9 @@ class PlotModel:
                 name=name,
                 config=self.config,
                 metadata=self.data.metadata,
-                x=self.data.data_from_string(self.x, mask=mask),
-                y=self.data.data_from_string(self.y, mask=mask),
-                z=self.data.data_from_string(self.z, mask=mask),
+                x=self.data.calculation_from_string(self.x, mask=mask),
+                y=self.data.calculation_from_string(self.y, mask=mask),
+                z=self.data.calculation_from_string(self.z, mask=mask),
                 **units,
                 **self.plot_spec.get(name, {}),
             )
