@@ -156,6 +156,11 @@ class MetadataAREPOSubFind(MetadataSpecification):
             "Subhalo/SubhaloVmax": self.velocity,
             "Subhalo/SubhaloVmaxRad": self.a * self.length / self.h,
             "Subhalo/SubhaloWindMass": self.mass / self.h,
+            "Subhalo/SubhaloGasDustMetallicity": None,
+            "Subhalo/├SubhaloGasDustMetallicityHalfRad": None,
+            "Subhalo/├SubhaloGasDustMetallicityMaxRad": None,
+            "Subhalo/├SubhaloGasDustMetallicitySfr": None,
+            "Subhalo/├SubhaloGasDustMetallicitySfrWeighted": None,
         }
 
 
@@ -278,5 +283,5 @@ class IOAREPOSubFind(IOSpecification):
         return unyt.unyt_array(
             self.read_raw_field(field=field, selector=selector),
             self.get_unit(field),
-            name=path,
+            name=path.split("/")[-1],
         )[mask]
