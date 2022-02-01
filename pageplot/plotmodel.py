@@ -144,7 +144,7 @@ class PlotModel:
         if additional_extensions is None:
             additional_extensions = {}
 
-        combined_extensions = {**built_in_extensions, **additional_extensions}
+        combined_extensions = {**additional_extensions, **built_in_extensions}
 
         for name in self.plot_spec.keys():
             try:
@@ -153,6 +153,10 @@ class PlotModel:
                 raise PagePlotParserError(
                     name, "Unable to find matching extension for configuration value."
                 )
+
+        for name, Extension in combined_extensions.items():
+            if name not in self.plot_spec.keys():
+                continue
 
             extension = Extension(
                 name=name,
