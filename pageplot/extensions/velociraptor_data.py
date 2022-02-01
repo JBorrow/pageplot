@@ -15,6 +15,7 @@ from typing import List
 from pathlib import Path
 
 import attr
+import numpy as np
 
 
 @attr.s(auto_attribs=True)
@@ -65,8 +66,8 @@ class VelociraptorDataExtension(PlotExtension):
         Loads the data files in.
         """
 
-        bracket_high = self.metadata.a - self.scale_factor_bracket_width
-        bracket_low = self.metadata.a + self.scale_factor_bracket_width
+        bracket_high = np.mean(self.metadata.a) - self.scale_factor_bracket_width
+        bracket_low = np.mean(self.metadata.a) + self.scale_factor_bracket_width
 
         redshift_bracket = [1.0 / a - 1.0 for a in [bracket_low, bracket_high]]
 
