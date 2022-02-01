@@ -1,68 +1,92 @@
 """
-IO Structures for PagePlot.
-
-These can be extended by using their pluggy hooks
-and iheritence.
+A wrapper for multiple IO components.
 """
 
-from typing import Optional, Type, Union
-import unyt
+from typing import Any, List, Optional, Union
+import attr
+
 import numpy as np
+import unyt
+
+from pageplot.exceptions import PagePlotParserError
+from .spec import IOSpecification, MetadataSpecification, dataset_searcher
 
 from pathlib import Path
 
-import re
 
-import attr
+@attr.s(auto_attribs=False)
+class MultiMetadataSpecification:
+    filenames: List[Path] = attr.ib()
+    base_spec: MetadataSpecification = attr.ib()
 
-dataset_searcher = re.compile(r"\{(.*?)\}")
-
-
-@attr.s(auto_attribs=True)
-class MetadataSpecification:
-    """
-    Specification for adding additional metadata to the I/O specification.
-    """
-
-    filename: Path = attr.ib(converter=Path)
-
-    # Suggested Additions:
-    # - For Cosmology
-    #   + box_volume, the volume of the box used (for mass functions)
-    #   + a, the current scale factor (if appropriate)
-    #   + z, the current redshift (if appropriate)
-
-
-@attr.s(auto_attribs=True)
-class IOSpecification:
-    """
-    Base required specification for I/O extensions.
-    """
-
-    filename: Path = attr.ib(converter=Path)
-
-    # Specification assocaited with this IOSpecification
-    metadata_specification: Type = MetadataSpecification
-    # Storage object that is lazy-loaded
-    metadata: MetadataSpecification = attr.ib(init=False)
+    individual_metadata: List[MetadataSpecification]
 
     def __attrs_post_init__(self):
-        self.metadata = self.metadata_specification(filename=self.filename)
+        self.individual_metadata = [
+            self.base_spec(filename) for filename in self.filenames
+        ]
+
+    def __getattr__(self, attr) -> List[Any]:
+        return [getattr(metadata, attr, None) for metadata in self.individual_metadata]
+
+
+@attr.s(auto_attribs=False)
+class MultiIOSpecification:
+    filenames: List[Path] = attr.ib()
+
+    base_data_spec: IOSpecification = attr.ib()
+    base_metadata_spec: MetadataSpecification = attr.ib()
+
+    metadata: MultiMetadataSpecification
+    individual_data: List[IOSpecification]
+
+    def __attrs_post_init__(self):
+        self.individual_data = [
+            self.base_data_spec(filename) for filename in self.filenames
+        ]
+
+        self.metadata = MultiMetadataSpecification(
+            filenames=self.filenames,
+            base_spec=self.base_metadata_spec,
+        )
 
     def data_from_string(
         self,
         path: Optional[str],
         mask: Optional[Union[np.array, np.lib.index_tricks.IndexExpression]] = None,
     ) -> Optional[unyt.unyt_array]:
-        """
-        Return a ``unyt`` array containing data assocaited with the
-        given input string. If passed ``None``, this function must return
-        ``None``.
+        """ """
 
-        A mask may optionally be provided to select data. This can
-        be handled by the individual plugin creators for lazy-loading.
-        """
-        return unyt.unyt_array()
+        if path is None:
+            return None
+
+        if mask is None:
+            mask = np.s_[:]
+
+        individual_reads = []
+
+        for data in self.individual_data:
+            try:
+                individual_reads.append(data.data_from_string(path=path, mask=None))
+            except KeyError:
+                # Must just not be in this file.
+                continue
+
+        if len(individual_reads) == 0:
+            raise RuntimeError(
+                f"Unable to find {path} in any files, or its units are not registered "
+                "and the code raised a KeyError internally."
+            )
+
+        base_unit = individual_reads[-1].units
+        base_name = individual_reads[-1].name
+
+        for array in individual_reads:
+            array.convert_to_units(base_unit)
+
+        return unyt.unyt_array(
+            np.concatenate(individual_reads)[mask], units=base_unit, name=base_name
+        )
 
     def calculation_from_string(
         self,
