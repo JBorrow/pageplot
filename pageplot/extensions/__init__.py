@@ -2,6 +2,7 @@
 Built in extensions.
 """
 
+from pageplot.extensions.mean_line import MeanLineExtension
 from pageplot.extensions.metadata import MetadataExtension
 from pageplot.extensions.legend import LegendExtension
 from pageplot.extensions.velociraptor_data import (
@@ -24,6 +25,7 @@ built_in_extensions = {
     # items to avoid zorder clashes.
     "mass_function": MassFunctionExtension,
     "median_line": MedianLineExtension,
+    "mean_line": MeanLineExtension,
     "velociraptor_data": VelociraptorDataExtension,
     # Finally, put 'global' extensions, like the ones that
     # change plot limits and so on.
