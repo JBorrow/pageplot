@@ -35,10 +35,12 @@ class AxesLimitsExtension(PlotExtension):
             axes.set_xlim(*self.limits_x)
             axes.set_ylim(*self.limits_y)
         except AttributeError:
-            raise PagePlotParserError(
-                self.limits_x + self.limits_y,
-                "Unable to set plot limits. It is likely that the plot is empty "
-                + "and an internal matplotlib call is failing. You should set the "
-                + "limits at the end of your JSON, and verify that your data is not "
-                + "empty.",
-            )
+            return
+        # except:
+        #     raise PagePlotParserError(
+        #         self.limits_x + self.limits_y,
+        #         "Unable to set plot limits. It is likely that the plot is empty "
+        #         + "and an internal matplotlib call is failing. You should set the "
+        #         + "limits at the end of your JSON, and verify that your data is not "
+        #         + "empty.",
+        #     )
