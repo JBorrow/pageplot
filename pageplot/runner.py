@@ -14,6 +14,7 @@ from pageplot.plotcontainer import PlotContainer
 from pageplot.webpage.html import WebpageCreator
 from pathlib import Path
 from typing import Dict, List, Optional
+import pickle
 import attr
 
 
@@ -94,12 +95,11 @@ class PagePlotRunner:
         """
 
         with open(self.config_filename, "r") as handle:
-            self.config = GlobalConfig(
-                **json.load(handle),
-                extensions=self.additional_config_extensions,
-            )
+            self.config = GlobalConfig(**json.load(handle))
 
-        self.config.run_extensions()
+        self.config.run_extensions(
+            additional_extensions=self.additional_config_extensions
+        )
 
         return self.config
 
@@ -198,8 +198,8 @@ class PagePlotRunner:
         ----------
 
         serialized_data_filename: Path
-            Path to the output JSON file.
+            Path to the output pickle file.
         """
 
-        with open(serialized_data_filename, "w") as handle:
-            json.dump(self.plot_container.serialize(), handle)
+        with open(serialized_data_filename, "wb") as handle:
+            pickle.dump(self.plot_container.serialize(), handle)
