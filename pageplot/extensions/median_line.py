@@ -132,7 +132,9 @@ class MedianLineExtension(PlotExtension):
         Displays the median line on the figure.
         """
 
-        self.display_as(axes=axes, x=self.centers, y=self.values, yerr=self.errors)
+        self.display_as(
+            axes=axes, x=self.centers, y=self.values, yerr=self.errors, label="Median"
+        )
 
         return
 
