@@ -5,15 +5,15 @@ from data loading to plot output without crashing.
 Creates a basic scatter plot.
 """
 
-from pageplot.plotmodel import PlotModel
-from pageplot.config import GlobalConfig
-from pageplot.io.h5py import IOHDF5
+import os
 from pathlib import Path
 
 import h5py
 import numpy as np
 
-import os
+from pageplot.config import GlobalConfig
+from pageplot.io.h5py import IOHDF5
+from pageplot.plotmodel import PlotModel
 
 
 def test_integration_basic(show_plot=True):

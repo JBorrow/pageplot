@@ -5,10 +5,10 @@ in the final files).
 
 from typing import Optional, Union
 
-from matplotlib.pyplot import Figure, Axes
-from pageplot.extensionmodel import PlotExtension
-
 import attr
+from matplotlib.pyplot import Axes, Figure
+
+from pageplot.extensionmodel import PlotExtension
 
 
 @attr.s(auto_attribs=True)

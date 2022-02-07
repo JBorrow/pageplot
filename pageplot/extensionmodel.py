@@ -3,15 +3,15 @@ Model for extensions that perform plotting and
 data production duties.
 """
 
-from attr.setters import convert
-from pageplot.config import GlobalConfig
-from pageplot.io.spec import MetadataSpecification
-
-from typing import Optional, Dict, Any
+from typing import Any, Dict, Optional
 
 import attr
-import unyt
 import matplotlib.pyplot as plt
+import unyt
+from attr.setters import convert
+
+from pageplot.config import GlobalConfig
+from pageplot.io.spec import MetadataSpecification
 
 
 @attr.s(auto_attribs=True)

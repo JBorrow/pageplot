@@ -2,14 +2,14 @@
 Tests the HDF5 I/O.
 """
 
-from pageplot.io.h5py import IOHDF5
+import os
+from pathlib import Path
 
 import h5py
 import numpy as np
-import os
 import unyt
 
-from pathlib import Path
+from pageplot.io.h5py import IOHDF5
 
 
 def test_io_hdf5():

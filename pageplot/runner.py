@@ -4,18 +4,20 @@ Main runner for the plots. Takes in filenames and spits out plots.
 
 
 import json
-from pageplot.configextension import ConfigExtension
-from pageplot.extensionmodel import PlotExtension
-from pageplot.config import GlobalConfig
-from pageplot.exceptions import PagePlotParserError
-from pageplot.plotmodel import PlotModel
-from pageplot.io.spec import IOSpecification
-from pageplot.plotcontainer import PlotContainer
-from pageplot.webpage.html import WebpageCreator
+import pickle
 from pathlib import Path
 from typing import Dict, List, Optional
-import pickle
+
 import attr
+
+from pageplot.config import GlobalConfig
+from pageplot.configextension import ConfigExtension
+from pageplot.exceptions import PagePlotParserError
+from pageplot.extensionmodel import PlotExtension
+from pageplot.io.spec import IOSpecification
+from pageplot.plotcontainer import PlotContainer
+from pageplot.plotmodel import PlotModel
+from pageplot.webpage.html import WebpageCreator
 
 
 @attr.s(auto_attribs=True)

@@ -2,16 +2,16 @@
 A wrapper for multiple IO components.
 """
 
+from pathlib import Path
 from typing import Any, List, Optional, Union
-import attr
 
+import attr
 import numpy as np
 import unyt
 
 from pageplot.exceptions import PagePlotParserError
-from .spec import IOSpecification, MetadataSpecification, dataset_searcher
 
-from pathlib import Path
+from .spec import IOSpecification, MetadataSpecification, dataset_searcher
 
 
 @attr.s(auto_attribs=False)

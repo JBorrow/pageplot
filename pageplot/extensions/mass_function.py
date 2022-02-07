@@ -2,32 +2,29 @@
 Basic mass function extension.
 """
 
-from pageplot.validators import (
-    quantity_list_validator,
-    line_display_as_to_function_validator,
+from typing import Any, Callable, Dict, List, Union
+
+import attr
+import numpy as np
+import unyt
+from matplotlib.pyplot import Axes, Figure
+from velociraptor.tools.mass_functions import (
+    create_adaptive_mass_function,
+    create_mass_function,
 )
-from pageplot.extensionmodel import PlotExtension
+
 from pageplot.exceptions import (
     PagePlotIncompatbleExtension,
     PagePlotMissingMetadataError,
 )
-
-from typing import List, Union, Callable, Dict, Any
-
-from matplotlib.pyplot import Figure, Axes
+from pageplot.extensionmodel import PlotExtension
+from pageplot.validators import (
+    line_display_as_to_function_validator,
+    quantity_list_validator,
+)
 
 # This should be removed in later versions as this dependency is _not_ necessary
 # as the code should be moved over to this library anyway.
-
-from velociraptor.tools.mass_functions import (
-    create_mass_function,
-    create_adaptive_mass_function,
-)
-
-import unyt
-import numpy as np
-
-import attr
 
 
 @attr.s(auto_attribs=True)

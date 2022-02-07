@@ -2,10 +2,12 @@
 Helpful validators for use throughout extensions.
 """
 
-from pageplot.exceptions import PagePlotParserError
-import unyt
+from typing import Callable, List, Union
+
 import matplotlib.pyplot as plt
-from typing import List, Union, Callable
+import unyt
+
+from pageplot.exceptions import PagePlotParserError
 
 
 def quantity_list_validator(

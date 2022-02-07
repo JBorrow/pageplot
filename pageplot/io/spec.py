@@ -5,15 +5,13 @@ These can be extended by using their pluggy hooks
 and iheritence.
 """
 
-from typing import Optional, Type, Union
-import unyt
-import numpy as np
-
-from pathlib import Path
-
 import re
+from pathlib import Path
+from typing import Optional, Type, Union
 
 import attr
+import numpy as np
+import unyt
 
 dataset_searcher = re.compile(r"\{(.*?)\}")
 

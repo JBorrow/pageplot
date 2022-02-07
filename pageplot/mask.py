@@ -2,13 +2,13 @@
 Function for parsing and using the mask variable.
 """
 
-from pageplot.io.spec import IOSpecification
-from typing import Optional, Union
-
 import operator
+from typing import Optional, Union
 
 import numpy as np
 import unyt
+
+from pageplot.io.spec import IOSpecification
 
 
 def get_mask(

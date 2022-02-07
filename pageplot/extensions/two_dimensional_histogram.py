@@ -2,19 +2,18 @@
 Basic histogram plot extension.
 """
 
-from pageplot.validators import quantity_list_validator
-from typing import List, Union, Optional
-from pageplot.extensionmodel import PlotExtension
-from pageplot.exceptions import PagePlotIncompatbleExtension
-
-from matplotlib.pyplot import Figure, Axes
-from matplotlib.colors import LogNorm, Normalize
-
-import unyt
-import numpy as np
 import math
+from typing import List, Optional, Union
 
 import attr
+import numpy as np
+import unyt
+from matplotlib.colors import LogNorm, Normalize
+from matplotlib.pyplot import Axes, Figure
+
+from pageplot.exceptions import PagePlotIncompatbleExtension
+from pageplot.extensionmodel import PlotExtension
+from pageplot.validators import quantity_list_validator
 
 
 @attr.s(auto_attribs=True)

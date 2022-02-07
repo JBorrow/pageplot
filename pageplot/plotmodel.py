@@ -4,20 +4,20 @@ The base top-level plot model class.
 From this all data and plotting flow.
 """
 
-from pageplot.exceptions import PagePlotParserError
 from pathlib import Path
-from typing import Any, Optional, Dict, List, Union
+from typing import Any, Dict, List, Optional, Union
 
-from pageplot.extensionmodel import PlotExtension
-from pageplot.extensions import built_in_extensions
-from pageplot.io.spec import IOSpecification
-from pageplot.config import GlobalConfig
-from pageplot.mask import get_mask
-
+import attr
 import matplotlib.pyplot as plt
 import numpy as np
 import unyt
-import attr
+
+from pageplot.config import GlobalConfig
+from pageplot.exceptions import PagePlotParserError
+from pageplot.extensionmodel import PlotExtension
+from pageplot.extensions import built_in_extensions
+from pageplot.io.spec import IOSpecification
+from pageplot.mask import get_mask
 
 
 @attr.s(auto_attribs=True)

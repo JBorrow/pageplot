@@ -2,18 +2,17 @@
 Basic implementation of the HDF5 I/O.
 """
 
+import re
 from typing import Optional, Type, Union
 
 import attr
+import h5py
+import numpy as np
+import unyt
 
 from pageplot.exceptions import PagePlotParserError
+
 from .spec import IOSpecification, MetadataSpecification
-
-import h5py
-import unyt
-import re
-
-import numpy as np
 
 field_search = re.compile(r"(.*?)(\[.*?\])? (.*)")
 

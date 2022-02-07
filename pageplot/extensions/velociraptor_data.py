@@ -2,20 +2,18 @@
 Velociraptor comparison data plotting extension.
 """
 
+from pathlib import Path
+from typing import List
+
+import attr
+import numpy as np
+from matplotlib.pyplot import Axes, Figure
 from velociraptor.observations import load_observations
 from velociraptor.observations.objects import ObservationalData
 
 from pageplot.configextension import ConfigExtension
-from pageplot.extensionmodel import PlotExtension
 from pageplot.exceptions import PagePlotIncompatbleExtension
-
-from matplotlib.pyplot import Figure, Axes
-
-from typing import List
-from pathlib import Path
-
-import attr
-import numpy as np
+from pageplot.extensionmodel import PlotExtension
 
 
 @attr.s(auto_attribs=True)

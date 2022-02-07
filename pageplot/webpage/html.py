@@ -2,13 +2,13 @@
 Functions that aid in the production of the HTML webpages.
 """
 
-from pageplot.config import GlobalConfig
-from pageplot.plotcontainer import PlotContainer
-
-from jinja2 import Environment, PackageLoader, select_autoescape
 from time import strftime
 
 import unyt
+from jinja2 import Environment, PackageLoader, select_autoescape
+
+from pageplot.config import GlobalConfig
+from pageplot.plotcontainer import PlotContainer
 
 
 def format_number(number):

@@ -4,16 +4,15 @@ as well as being used to set the units on those
 axes.
 """
 
-from pageplot.exceptions import PagePlotParserError
-from pageplot.validators import quantity_list_validator
-from pageplot.extensionmodel import PlotExtension
 from typing import List, Union
 
-
-from matplotlib.pyplot import Figure, Axes
-
-import unyt
 import attr
+import unyt
+from matplotlib.pyplot import Axes, Figure
+
+from pageplot.exceptions import PagePlotParserError
+from pageplot.extensionmodel import PlotExtension
+from pageplot.validators import quantity_list_validator
 
 
 @attr.s(auto_attribs=True)

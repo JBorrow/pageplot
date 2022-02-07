@@ -2,11 +2,10 @@
 Basic extension to scale axes.
 """
 
-from pageplot.extensionmodel import PlotExtension
-
-from matplotlib.pyplot import Figure, Axes
-
 import attr
+from matplotlib.pyplot import Axes, Figure
+
+from pageplot.extensionmodel import PlotExtension
 
 
 @attr.s(auto_attribs=True)

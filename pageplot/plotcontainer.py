@@ -2,13 +2,14 @@
 PlotModel conatiner, used to 'create all the plots'.
 """
 
-from pageplot.extensionmodel import PlotExtension
 from pathlib import Path
-from pageplot.io.spec import IOSpecification
-from pageplot.plotmodel import PlotModel
 from typing import Any, Dict
 
 import attr
+
+from pageplot.extensionmodel import PlotExtension
+from pageplot.io.spec import IOSpecification
+from pageplot.plotmodel import PlotModel
 
 
 @attr.s(auto_attribs=True)

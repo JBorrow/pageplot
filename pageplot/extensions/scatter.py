@@ -2,12 +2,11 @@
 Basic scatter plot extension.
 """
 
-from pageplot.extensionmodel import PlotExtension
-from pageplot.exceptions import PagePlotIncompatbleExtension
-
-from matplotlib.pyplot import Figure, Axes
-
 import attr
+from matplotlib.pyplot import Axes, Figure
+
+from pageplot.exceptions import PagePlotIncompatbleExtension
+from pageplot.extensionmodel import PlotExtension
 
 
 @attr.s(auto_attribs=True)

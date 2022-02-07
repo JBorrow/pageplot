@@ -2,22 +2,20 @@
 Basic median line extension.
 """
 
-from pageplot.validators import (
-    quantity_list_validator,
-    line_display_as_to_function_validator,
-)
-from pageplot.extensionmodel import PlotExtension
-from pageplot.exceptions import PagePlotIncompatbleExtension
-
-from typing import List, Union, Callable, Dict, Any
-
-from matplotlib.pyplot import Figure, Axes
-
+import math
+from typing import Any, Callable, Dict, List, Union
 
 import attr
-import unyt
 import numpy as np
-import math
+import unyt
+from matplotlib.pyplot import Axes, Figure
+
+from pageplot.exceptions import PagePlotIncompatbleExtension
+from pageplot.extensionmodel import PlotExtension
+from pageplot.validators import (
+    line_display_as_to_function_validator,
+    quantity_list_validator,
+)
 
 
 @attr.s(auto_attribs=True)

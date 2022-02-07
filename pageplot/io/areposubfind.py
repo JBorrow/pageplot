@@ -5,20 +5,18 @@ Needs to loop over many, many files, so employs a parallel mapper to
 do that. These are typically latency limited on HPC systems.
 """
 
-from typing import Optional, Type, Dict, Any, Union, List
-
-import attr
-
-from pageplot.exceptions import PagePlotParserError
-from .spec import IOSpecification, MetadataSpecification
-
 from glob import glob
 from pathlib import Path
+from typing import Any, Dict, List, Optional, Type, Union
 
+import attr
 import h5py
+import numpy as np
 import unyt
 
-import numpy as np
+from pageplot.exceptions import PagePlotParserError
+
+from .spec import IOSpecification, MetadataSpecification
 
 
 @attr.s(auto_attribs=True)
