@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name="pageplot",
-    version="0.0.1",
+    version="0.0.2",
     description="",
     url="",
     author="Josh Borrow",
@@ -16,5 +16,13 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    install_requires=["attrs", "h5py", "velociraptor", "matplotlib", "numpy", "scipy", "unyt"],
+    install_requires=[
+        "attrs",
+        "h5py",
+        "velociraptor",
+        "matplotlib",
+        "numpy",
+        "scipy",
+        "unyt",
+    ],
 )
